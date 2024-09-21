@@ -2,49 +2,39 @@ package com.team841.calliope.superstructure.shooter;
 
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.team841.betaSwerve2024.Constants.ConstantsIO;
-import com.team841.betaSwerve2024.Constants.SC;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
 
+    private final ShooterIO io;
+    private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
-
-    public Shooter() {
-
-        // bottomShooter.setControl(new Follower(topShooter.getDeviceID(), false));
+    public Shooter(ShooterIO io) {
+        this.io = io;
     }
 
-    private void setVelocity(double velocity) {
-        topShooter.setControl(new MotionMagicVelocityVoltage(velocity));
-    }
-
-    protected void Shoot() {
-        setVelocity(60);
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("Shooter", inputs);
     }
 
     public void spinUp() {
-        topShooter.setControl(
-                new MotionMagicVelocityVoltage(95).withFeedForward(6).withAcceleration(200).withSlot(0));
-        bottomShooter.setControl(
-                new MotionMagicVelocityVoltage(95).withFeedForward(6).withAcceleration(200).withSlot(0));
+        io.setMotionMagicVelocityVoltageOutput(95);
     }
 
     public void ampShot() {
-        topShooter.setControl(
-                new MotionMagicVelocityVoltage(1.5).withFeedForward(6).withAcceleration(200).withSlot(0));
-        bottomShooter.setControl(
-                new MotionMagicVelocityVoltage(12.5).withFeedForward(6).withAcceleration(200).withSlot(0));
+        io.setMotionMagicVelocityVoltageOutput(1.5, 12.5);
     }
 
     public Command idleBack() {
         return new RunCommand(
                 () -> {
-                    topShooter.set(-0.05);
-                    bottomShooter.set(-0.015);
+                    io.setMotionMagicVelocityVoltageOutput(-0.05, -0.015);
                 },
                 this);
     }
@@ -52,55 +42,30 @@ public class Shooter extends SubsystemBase {
     public void trapShot() {
         double top = 9.9375;
         double bottom = 82.8125;
-        topShooter.setControl(
-                new MotionMagicVelocityVoltage(top).withFeedForward(6).withAcceleration(200).withSlot(0));
-        bottomShooter.setControl(
-                new MotionMagicVelocityVoltage(bottom)
-                        .withFeedForward(6)
-                        .withAcceleration(200)
-                        .withSlot(0));
+        io.setMotionMagicVelocityVoltageOutput(top, bottom);
     }
 
     public void flyShot() {
-        topShooter.setControl(
-                new MotionMagicVelocityVoltage(70).withFeedForward(6).withAcceleration(200).withSlot(0));
-        bottomShooter.setControl(
-                new MotionMagicVelocityVoltage(70).withFeedForward(6).withAcceleration(200).withSlot(0));
+        io.setMotionMagicVelocityVoltageOutput(70);
     }
 
     public void disruptshot() {
-        topShooter.setControl(
-                new MotionMagicVelocityVoltage(12.5).withFeedForward(6).withAcceleration(200).withSlot(0));
-        bottomShooter.setControl(
-                new MotionMagicVelocityVoltage(12.5).withFeedForward(6).withAcceleration(200).withSlot(0));
-    }
-
-    protected double getMotorVoltage() {
-        return topShooter.getMotorVoltage().getValue();
+        io.setMotionMagicVelocityVoltageOutput(12.5);
     }
 
     public boolean isShooting() {
-        return this.topShooter.getVelocity().getValue() > 0;
+        return this.inputs.topVelocity > 0;
     }
 
     public boolean isHighShot() {
-        return this.topShooter.getVelocity().getValue() > 75;
+        return this.inputs.topVelocity > 75;
     }
 
-  /* public void stopShooter() {
-    topShooter.stopMotor();
-    bottomShooter.stopMotor();
-  } */
-
     public void stopShooter() {
-        bottomShooter.set(-0.05);
-        topShooter.set(-0.05);
+        io.setMotionMagicVelocityVoltageOutput(-0.05);
     }
 
     public Command runShooter(double velocity) {
-        return new InstantCommand(() -> this.setVelocity(velocity));
+        return new InstantCommand(() -> io.setMotionMagicVelocityVoltageOutput(velocity));
     }
-
-    @Override
-    public void periodic() {}
 }

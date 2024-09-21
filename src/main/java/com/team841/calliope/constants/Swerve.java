@@ -6,6 +6,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+import com.team841.calliope.drive.Drivetrain;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -158,7 +159,7 @@ public class Swerve {
   public static double MaxAngularRate =
       4 * Math.PI; // 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
   public static double MaxSpeed = kSpeedAt12VoltsMps;
-  // protected static final Drivetrain DriveTrain = new Drivetrain(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);
+  public static final Drivetrain DriveTrain = new Drivetrain(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);
 
   public static final ProfiledPIDController TurnController =
       new ProfiledPIDController(7, 0.0, 0.0, new TrapezoidProfile.Constraints(0, 0));

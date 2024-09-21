@@ -5,13 +5,18 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ShooterIO {
     @AutoLog
     public class ShooterIOInputs{
-        public double velocity;
-        public double motionMagicVoltageOutput;
+        public double topVelocity;
+        public double bottomVelocity;
+        public double topMotionMagicVoltageVelocity;
+        public double bottomMotionMagicVoltageVelocity;
+
     }
 
     public default void updateInputs(ShooterIOInputs inputs) { }
 
-    public default void setMotionMagicVoltageOutput(double voltageOutput) { }
+    public default void setMotionMagicVelocityVoltageOutput(double velocity) { }
 
-    public default void stopShooter() { }
+    public default void setMotionMagicVelocityVoltageOutput(double topVelocity, double bottomVelocity) { }
+
+    public default void stop() { }
 }

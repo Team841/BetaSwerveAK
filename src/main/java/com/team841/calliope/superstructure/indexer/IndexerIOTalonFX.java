@@ -26,10 +26,12 @@ public class IndexerIOTalonFX implements IndexerIO{
         inputs.velocity = this.indexerTalon.getVelocity().getValue();
     }
 
+    @Override
     public void setDutyCycle(double velocity) {
         this.indexerTalon.setControl(output.withOutput(velocity));
     }
 
+    @Override
     public void stopIndexer() {
         this.indexerTalon.stopMotor();
     }
