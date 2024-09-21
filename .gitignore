@@ -178,3 +178,5 @@ logs/
 ctre_sim/
 
 .idea
+
+src/main/java/com/team841/calliope/BuildConstants.java
