@@ -1,5 +1,6 @@
 package com.team841.calliope.superstructure.lights;
 
+import com.team841.calliope.Robot;
 import com.team841.calliope.RobotContainer;
 import com.team841.calliope.superstructure.indexer.Indexer;
 import com.team841.calliope.superstructure.intake.Intake;
@@ -11,9 +12,9 @@ public class LED extends SubsystemBase {
     private final LEDIO io;
     private final LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
 
-    private Indexer indexer = RobotContainer.getInstance().indexer;
+    private Indexer indexer;
 
-    private Intake intake = RobotContainer.getInstance().intake;
+    private Intake intake;
 
     private int count = 0;
 
@@ -26,6 +27,11 @@ public class LED extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("LED", inputs);
+
+        if (this.indexer == null)
+            this.indexer = Robot.m_robotContainer.indexer;
+        if (this.intake == null)
+            this.intake = Robot.m_robotContainer.intake;
 
         // if (intake.)
         if (indexer.getRightIndexerSensor() && indexer.getLeftIndexerSensor()) {

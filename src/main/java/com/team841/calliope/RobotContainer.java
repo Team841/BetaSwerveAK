@@ -65,11 +65,15 @@ public class RobotContainer {
 
     private final Telemetry telemetry = new Telemetry(Swerve.MaxSpeed);
 
-    private static RobotContainer instance;
+    private static volatile RobotContainer instance;
 
     public static RobotContainer getInstance() {
         if (instance == null) {
-            instance = new RobotContainer();
+            synchronized (RobotContainer.class) {
+                if (instance == null){
+                    instance = new RobotContainer();
+                }
+            }
         }
         return instance;
     }

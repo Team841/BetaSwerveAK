@@ -19,10 +19,12 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
     private Command m_autonomousCommand;
 
-    private RobotContainer m_robotContainer = RobotContainer.getInstance();
+    public static RobotContainer m_robotContainer;
 
     @Override
     public void robotInit() {
+
+        this.m_robotContainer = RobotContainer.getInstance();
 
         Logger.recordMetadata("ProjectName", "Calliope-software");
         Logger.recordMetadata("TuningMode", Boolean.toString(RC.robotType == RC.RunType.DEV));
