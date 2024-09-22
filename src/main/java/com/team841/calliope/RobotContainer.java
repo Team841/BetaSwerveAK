@@ -94,7 +94,7 @@ public class RobotContainer {
                 this.hanger = new Hanger(this.hangerIO);
 
                 this.ledIO = new LEDIOSpark();
-                this.led = new LED(this.ledIO);
+                this.led = new LED(this.ledIO, this.indexer, this.intake);
             }
         }
 

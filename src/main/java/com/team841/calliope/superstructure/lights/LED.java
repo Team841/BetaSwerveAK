@@ -19,8 +19,10 @@ public class LED extends SubsystemBase {
     private int count = 0;
 
     /** Creates a new LED. */
-    public LED(LEDIO io) {
+    public LED(LEDIO io, Indexer indexer, Intake intake) {
        this.io = io;
+       this.indexer = indexer;
+       this.intake = intake;
     }
 
     @Override
@@ -28,12 +30,6 @@ public class LED extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("LED", inputs);
 
-        if (this.indexer == null)
-            this.indexer = Robot.m_robotContainer.indexer;
-        if (this.intake == null)
-            this.intake = Robot.m_robotContainer.intake;
-
-        // if (intake.)
         if (indexer.getRightIndexerSensor() && indexer.getLeftIndexerSensor()) {
             io.setColor("Green");
             if (count == 0) count += 1;
