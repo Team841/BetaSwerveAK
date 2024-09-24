@@ -61,10 +61,10 @@ public class Swerve {
   private static final double kSteerFrictionVoltage = 0.25;
   private static final double kDriveFrictionVoltage = 0.25;
 
-  private static final SwerveDrivetrainConstants DrivetrainConstants =
+  public static final SwerveDrivetrainConstants DrivetrainConstants =
       new SwerveDrivetrainConstants().withPigeon2Id(kPigeonId).withCANbusName(kCANbusName);
 
-  private static final SwerveModuleConstantsFactory ConstantCreator =
+  public static final SwerveModuleConstantsFactory ConstantCreator =
       new SwerveModuleConstantsFactory()
           .withDriveMotorGearRatio(kDriveGearRatio)
           .withSteerMotorGearRatio(kSteerGearRatio)
@@ -119,7 +119,7 @@ public class Swerve {
   private static final double kBackRightXPosInches = -10.375;
   private static final double kBackRightYPosInches = -10.375;
 
-  private static final SwerveModuleConstants FrontLeft =
+  public static final SwerveModuleConstants FrontLeft =
       ConstantCreator.createModuleConstants(
           kFrontLeftSteerMotorId,
           kFrontLeftDriveMotorId,
@@ -128,7 +128,7 @@ public class Swerve {
           Units.inchesToMeters(kFrontLeftXPosInches),
           Units.inchesToMeters(kFrontLeftYPosInches),
           kInvertLeftSide);
-  private static final SwerveModuleConstants FrontRight =
+  public static final SwerveModuleConstants FrontRight =
       ConstantCreator.createModuleConstants(
           kFrontRightSteerMotorId,
           kFrontRightDriveMotorId,
@@ -137,7 +137,7 @@ public class Swerve {
           Units.inchesToMeters(kFrontRightXPosInches),
           Units.inchesToMeters(kFrontRightYPosInches),
           kInvertRightSide);
-  private static final SwerveModuleConstants BackLeft =
+  public static final SwerveModuleConstants BackLeft =
       ConstantCreator.createModuleConstants(
           kBackLeftSteerMotorId,
           kBackLeftDriveMotorId,
@@ -146,7 +146,7 @@ public class Swerve {
           Units.inchesToMeters(kBackLeftXPosInches),
           Units.inchesToMeters(kBackLeftYPosInches),
           kInvertLeftSide);
-  private static final SwerveModuleConstants BackRight =
+    public static final SwerveModuleConstants BackRight =
       ConstantCreator.createModuleConstants(
           kBackRightSteerMotorId,
           kBackRightDriveMotorId,
@@ -156,10 +156,8 @@ public class Swerve {
           Units.inchesToMeters(kBackRightYPosInches),
           kInvertRightSide);
 
-  public static double MaxAngularRate =
-      4 * Math.PI; // 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+  public static double MaxAngularRate = 4 * Math.PI; // 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
   public static double MaxSpeed = kSpeedAt12VoltsMps;
-  public static final Drivetrain DriveTrain = new Drivetrain(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);
 
   public static final ProfiledPIDController TurnController =
       new ProfiledPIDController(7, 0.0, 0.0, new TrapezoidProfile.Constraints(0, 0));

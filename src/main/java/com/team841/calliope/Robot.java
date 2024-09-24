@@ -4,6 +4,7 @@
 
 package com.team841.calliope;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.team841.calliope.constants.RC;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
@@ -63,6 +64,7 @@ public class Robot extends LoggedRobot {
                 break;
         }
 
+        SignalLogger.setPath("/media/sda1/");
         Logger.start();
     }
 
@@ -105,6 +107,8 @@ public class Robot extends LoggedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+
+        SignalLogger.start();
     }
 
     @Override
@@ -113,6 +117,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopExit() {
+        SignalLogger.stop();
     }
 
     @Override

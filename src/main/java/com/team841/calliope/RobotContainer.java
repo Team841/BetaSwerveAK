@@ -29,9 +29,11 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
+import static com.team841.calliope.constants.Swerve.DrivetrainConstants;
+
 public class RobotContainer {
 
-    public final Drivetrain drivetrain = Swerve.DriveTrain;
+    public final Drivetrain drivetrain;
 
     public final ShooterIO shooterIO;
     public final Shooter shooter;
@@ -50,8 +52,8 @@ public class RobotContainer {
 
     public final CommandXboxController soloStick = new CommandXboxController(RC.Controllers.soloStick);
 
-    public final CommandPS5Controller duoStickDrive = new CommandPS5Controller(RC.Controllers.duoStickDrive);
-    public final CommandXboxController duoStickCoDrive = new CommandXboxController(RC.Controllers.duoStickCoDrive);
+    //public final CommandPS5Controller duoStickDrive = new CommandPS5Controller(RC.Controllers.duoStickDrive);
+    //public final CommandXboxController duoStickCoDrive = new CommandXboxController(RC.Controllers.duoStickCoDrive);
 
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
@@ -81,6 +83,8 @@ public class RobotContainer {
     public RobotContainer() {
         switch (RC.robotType) {
             default -> {
+                this.drivetrain = new Drivetrain(Swerve.DrivetrainConstants, Swerve.FrontLeft, Swerve.FrontRight, Swerve.BackLeft, Swerve.BackRight);
+
                 this.shooterIO = new ShooterIOTalonFX();
                 this.shooter = new Shooter(this.shooterIO);
 
@@ -99,11 +103,11 @@ public class RobotContainer {
         }
 
         configureSoloStick();
-        configureDuoStick();
+        //configureDuoStick();
     }
 
     private void configureSoloStick() {
-        drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+        this.drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(
                         () ->
                                 drive
@@ -145,8 +149,8 @@ public class RobotContainer {
                         new SequentialCommandGroup(
                                 new InstantCommand(indexer::stopIndexer),
                                 new InstantCommand(shooter::stopShooter)));
-        soloStick.rightStick().whileTrue(new InstantCommand(hanger::ExtendHanger)).onFalse(new InstantCommand(hanger::StopHanger));
-        soloStick.leftStick().whileTrue(new InstantCommand(hanger::RetractHanger)).onFalse(new InstantCommand(hanger::StopHanger));
+        //soloStick.rightStick().whileTrue(new InstantCommand(hanger::ExtendHanger)).onFalse(new InstantCommand(hanger::StopHanger));
+        //soloStick.leftStick().whileTrue(new InstantCommand(hanger::RetractHanger)).onFalse(new InstantCommand(hanger::StopHanger));
         soloStick.povCenter().whileTrue(new InstantCommand(hanger::StopHanger));
         soloStick.povLeft().whileTrue(new InstantCommand(hanger::toggleHanger));
         soloStick
@@ -168,7 +172,7 @@ public class RobotContainer {
                 .onFalse(new InstantCommand(shooter::stopShooter));
     }
 
-    private void configureDuoStick() {
+    /*private void configureDuoStick() {
         drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(
                         () ->
@@ -251,6 +255,9 @@ public class RobotContainer {
                 .onTrue(new InstantCommand(shooter::trapShot))
                 .onFalse(new InstantCommand(shooter::stopShooter));
     }
+
+     */
+
 
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");
