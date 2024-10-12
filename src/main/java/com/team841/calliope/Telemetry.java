@@ -98,11 +98,11 @@ public class Telemetry {
     Translation2d velocities = distanceDiff.div(diffTime);
 
     speed.set(velocities.getNorm());
-    Logger.recordOutput("Telemetry/Speed", velocities.getNorm());
+    //Logger.recordOutput("Telemetry/Speed", velocities.getNorm());
     velocityX.set(velocities.getX());
-    Logger.recordOutput("Telemetry/VelocityX", velocities.getX());
+    //Logger.recordOutput("Telemetry/VelocityX", velocities.getX());
     velocityY.set(velocities.getY());
-    Logger.recordOutput("Telemetry/VelocityY", velocities.getY());
+    //Logger.recordOutput("Telemetry/VelocityY", velocities.getY());
     odomPeriod.set(state.OdometryPeriod);
 
     /* Telemeterize the module's states */
@@ -112,7 +112,7 @@ public class Telemetry {
       m_moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
 
       SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
-      Logger.recordOutput("Telemetry/Module" + i, m_moduleMechanisms[i]);
+      //Logger.recordOutput("Telemetry/Module" + i, m_moduleMechanisms[i]);
     }
   }
 }
