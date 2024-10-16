@@ -99,6 +99,7 @@ dependencies {
     annotationProcessor "org.littletonrobotics.akit.junction:junction-autolog:$akitJson.version"
 
     implementation 'org.ejml:ejml-simple:0.43'
+    implementation group: 'org.dyn4j', name: 'dyn4j', version: '5.0.2'
 }
 
 test {
