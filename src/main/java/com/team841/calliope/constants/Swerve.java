@@ -168,6 +168,15 @@ public class Swerve {
   public static final ProfiledPIDController BioControlController =
       new ProfiledPIDController(14, 0.0, 0.0, new TrapezoidProfile.Constraints(0, 0));
 
+  public static class HeadingController {
+    public static double kp = 14;
+    public static double ki = 0.0;
+    public static double kd = 0.0;
+  }
+
+  public static double disToRobot = 2.74;
+  public static double disToRobotError = 0.15;
+
   public static class Vision {
     public static String kLimelightFrontName = "limelight-front";
   }

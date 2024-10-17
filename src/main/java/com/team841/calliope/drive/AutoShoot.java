@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class AutoShoot extends Command {
-/*
+
+  /*
   private ProfiledPIDController TurnController = Swerve.TurnController;
 
   private TrapezoidProfile.Constraints rotationConstraints = Swerve.rotationConstraints;
@@ -49,7 +50,7 @@ public class AutoShoot extends Command {
 
   @Override
   public void execute() {
-    // this.getState().Pose.getRotation().minus(Field.kRedSpeakerPose2d.getRotation());
+    // this.getState().Pose.getRotation().minus(FieldConstants.kRedSpeakerPose2d.getRotation());
 
     double rotationFeedback =
         TurnController.calculate(
@@ -90,6 +91,6 @@ public class AutoShoot extends Command {
   public boolean isFinished() {
     return this.passStartTime != -1 && Timer.getFPGATimestamp() - passStartTime > 0.8;
   }
+  */
 
- */
 }
