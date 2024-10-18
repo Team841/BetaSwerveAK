@@ -52,10 +52,10 @@ public class RobotContainer {
     public final LEDIO ledIO;
     public final LED led;
 
-    //public final CommandXboxController soloStick = new CommandXboxController(RC.Controllers.soloStick);
+    public final CommandXboxController soloStick = new CommandXboxController(RC.Controllers.soloStick);
 
-    public final CommandPS5Controller duoStickDrive = new CommandPS5Controller(RC.Controllers.duoStickDrive);
-    public final CommandXboxController duoStickCoDrive = new CommandXboxController(RC.Controllers.duoStickCoDrive);
+    //public final CommandPS5Controller duoStickDrive = new CommandPS5Controller(RC.Controllers.duoStickDrive);
+    //public final CommandXboxController duoStickCoDrive = new CommandXboxController(RC.Controllers.duoStickCoDrive);
 
     /*private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
@@ -72,7 +72,7 @@ public class RobotContainer {
     private final Telemetry telemetry = new Telemetry(Swerve.MaxSpeed);
 
     private BioDrive bioDrive;
-    private Shoot shootCommand;
+    //private Shoot shootCommand;
 
     private static volatile RobotContainer instance;
 
@@ -109,9 +109,9 @@ public class RobotContainer {
             }
         }
 
-        this.shootCommand = new Shoot(this.indexer, this.shooter);
+        //this.shootCommand = new Shoot(this.indexer, this.shooter);
 
-        this.bioDrive = new BioDrive(
+        /*this.bioDrive = new BioDrive(
                 this.drivetrain,
                 () -> -duoStickDrive.getLeftY() * Swerve.MaxSpeed,
                 () -> -duoStickDrive.getLeftX() * Swerve.MaxSpeed,
@@ -119,12 +119,20 @@ public class RobotContainer {
                 () -> duoStickDrive.L2().getAsBoolean(),
                 ()->duoStickDrive.R2().getAsBoolean(),
                 shootCommand);
+         */
 
-        //configureSoloStick();
-        configureDuoStick();
+        this.bioDrive = new BioDrive(
+                this.drivetrain,
+                () -> -soloStick.getLeftY() * Swerve.MaxSpeed,
+                () -> -soloStick.getLeftX() * Swerve.MaxSpeed,
+                () -> -soloStick.getRightX() * Swerve.MaxAngularRate,
+                () -> soloStick.a().getAsBoolean());
+
+        configureSoloStick();
+        //configureDuoStick();
     }
 
-    /*
+
     private void configureSoloStick() {
         /*this.drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(
@@ -140,7 +148,7 @@ public class RobotContainer {
                                                         .MaxAngularRate))); // Drive counterclockwise with negative X (left)
 
          */
-/*
+
         this.drivetrain.setDefaultCommand(bioDrive);
 
         // reset the field-centric heading on left bumper press
@@ -194,9 +202,9 @@ public class RobotContainer {
                 .whileTrue(new InstantCommand(shooter::flyShot))
                 .onFalse(new InstantCommand(shooter::stopShooter));
     }
-    */
 
-    private void configureDuoStick() {
+
+    /*private void configureDuoStick() {
         /*drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(
                         () ->
@@ -210,10 +218,10 @@ public class RobotContainer {
                                                         * Swerve
                                                         .MaxAngularRate))); // Drive counterclockwise with negative X (left)
 
-         */
+         /*
 
 
-        duoStickDrive.cross().whileTrue(drivetrain.applyRequest(() -> brake));
+        /*duoStickDrive.cross().whileTrue(drivetrain.applyRequest(() -> brake));
         duoStickDrive
                 .circle()
                 .whileTrue(
@@ -281,6 +289,8 @@ public class RobotContainer {
                 .onTrue(new InstantCommand(shooter::trapShot))
                 .onFalse(new InstantCommand(shooter::stopShooter));
     }
+
+     */
 
 
     public Command getAutonomousCommand() {

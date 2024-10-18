@@ -13,11 +13,13 @@ import java.util.function.DoubleSupplier;
 
 public class BioDrive extends Command {
 
-    public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter, BooleanSupplier autoShootGetter, Command shootCommand) {
-        super();
+    /*public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter, BooleanSupplier autoShootGetter, Command shootCommand) {
+        this(drivetrain, velocityXGetter, velocityYGetter, velocityOmegaGetter, faceSpeakerGetter);
         this.shootCommand = shootCommand;
         this.mAutoShoot = autoShootGetter;
     }
+
+     */
 
     public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter) {
 
@@ -36,16 +38,16 @@ public class BioDrive extends Command {
         setName("BioDrive");
     }
 
-    private Command shootCommand;
+    //private Command shootCommand;
 
     private DoubleSupplier mVelocityX, mVelocityY, mVelocityOmega;
-    private BooleanSupplier mFaceSpeaker, mAutoShoot;
+    private BooleanSupplier mFaceSpeaker; //mAutoShoot;
 
     private boolean faceSpeaker = false;
     private double velocity_y = 0.0;
     private double velocity_x = 0.0;
     private double velocity_omega = 0.0;
-    private boolean autoShoot = false;
+    //private boolean autoShoot = false;
 
     private Drivetrain drivetrain;
 
@@ -87,10 +89,11 @@ public class BioDrive extends Command {
             this.drivetrain.setControl(fieldCentricDrive.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withRotationalRate(this.velocity_omega));
         }
 
-        if (this.autoShoot && this.drivetrain.inRangeToSpeaker()){
+        /*if (this.autoShoot && this.drivetrain.inRangeToSpeaker()){
             this.shootCommand.execute();
         }
 
+         */
     }
 
     @Override
