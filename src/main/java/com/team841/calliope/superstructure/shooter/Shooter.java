@@ -58,7 +58,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isHighShot() {
-        return this.inputs.topVelocity > 75;
+        return this.inputs.topVelocity > 50;
     }
 
     public void stopShooter() {

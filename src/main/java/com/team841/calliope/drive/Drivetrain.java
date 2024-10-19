@@ -284,5 +284,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         SmartDashboard.putNumber("Turn angle", getHeadingToSpeaker.get().getDegrees());
         SmartDashboard.putNumber("Facing", this.getState().Pose.getRotation().getDegrees());
         SmartDashboard.putNumber("da", getHeadingToSpeaker.get().minus(this.getState().Pose.getRotation()).getDegrees());
+        SmartDashboard.putBoolean("In Dinstance", inRangeToSpeaker());
         }
 }

@@ -24,7 +24,7 @@ public class Shoot extends Command {
     @Override
     public void execute(){
         if (this.mShooter.isHighShot()){
-            this.mIndexer.Pass();
+            this.mIndexer.FULLPASS();
             if (this.passStartTime == -1)
                 this.passStartTime = Logger.getRealTimestamp();
         }

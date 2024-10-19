@@ -6,6 +6,7 @@ import com.team841.calliope.constants.Swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.BooleanSupplier;
@@ -13,13 +14,12 @@ import java.util.function.DoubleSupplier;
 
 public class BioDrive extends Command {
 
-    /*public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter, BooleanSupplier autoShootGetter, Command shootCommand) {
+    public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter, BooleanSupplier autoShootGetter, Command shootCommand) {
         this(drivetrain, velocityXGetter, velocityYGetter, velocityOmegaGetter, faceSpeakerGetter);
         this.shootCommand = shootCommand;
         this.mAutoShoot = autoShootGetter;
     }
 
-     */
 
     public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter) {
 
@@ -38,16 +38,16 @@ public class BioDrive extends Command {
         setName("BioDrive");
     }
 
-    //private Command shootCommand;
+    private Command shootCommand;
 
     private DoubleSupplier mVelocityX, mVelocityY, mVelocityOmega;
-    private BooleanSupplier mFaceSpeaker; //mAutoShoot;
+    private BooleanSupplier mFaceSpeaker, mAutoShoot;
 
     private boolean faceSpeaker = false;
     private double velocity_y = 0.0;
     private double velocity_x = 0.0;
     private double velocity_omega = 0.0;
-    //private boolean autoShoot = false;
+    private boolean autoShoot = false;
 
     private Drivetrain drivetrain;
 
@@ -74,6 +74,7 @@ public class BioDrive extends Command {
         this.velocity_x = mVelocityX.getAsDouble();
         this.velocity_y = mVelocityY.getAsDouble();
         this.velocity_omega = mVelocityOmega.getAsDouble();
+        this.autoShoot = mAutoShoot.getAsBoolean();
 
         Logger.recordOutput("BioDrive/FaceSpeaker", this.faceSpeaker);
         Logger.recordOutput("BioDrive/velocityX", this.velocity_x);
@@ -89,11 +90,10 @@ public class BioDrive extends Command {
             this.drivetrain.setControl(fieldCentricDrive.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withRotationalRate(this.velocity_omega));
         }
 
-        /*if (this.autoShoot && this.drivetrain.inRangeToSpeaker()){
-            this.shootCommand.execute();
+        if (this.autoShoot && this.drivetrain.inRangeToSpeaker()){
+            CommandScheduler.getInstance().schedule(this.shootCommand);
         }
 
-         */
     }
 
     @Override

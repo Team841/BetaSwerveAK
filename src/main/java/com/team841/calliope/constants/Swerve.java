@@ -174,8 +174,8 @@ public class Swerve {
     public static double kd = 0.0;
   }
 
-  public static double disToRobot = 2.74;
-  public static double disToRobotError = 0.15;
+  public static double disToRobot = 2.9;
+  public static double disToRobotError = 0.4;
 
   public static class Vision {
     public static String kLimelightFrontName = "limelight-front";
