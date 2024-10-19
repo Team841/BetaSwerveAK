@@ -34,7 +34,7 @@ public class Shooter extends SubsystemBase {
     public Command idleBack() {
         return new RunCommand(
                 () -> {
-                    io.setMotionMagicVelocityVoltageOutput(-0.05, -0.015);
+                    io.setMotionMagicVelocityVoltageOutput(-0.015, -0.015);
                 },
                 this);
     }
@@ -62,7 +62,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void stopShooter() {
-        io.setMotionMagicVelocityVoltageOutput(-0.05);
+        io.setMotionMagicVelocityVoltageOutput(0.015);
     }
 
     public Command runShooter(double velocity) {

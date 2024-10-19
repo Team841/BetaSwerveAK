@@ -128,6 +128,8 @@ public class RobotContainer {
                 () -> -soloStick.getRightX() * Swerve.MaxAngularRate,
                 () -> soloStick.a().getAsBoolean());
 
+        this.drivetrain.setDefaultCommand(bioDrive);
+
         configureSoloStick();
         //configureDuoStick();
     }
@@ -148,8 +150,6 @@ public class RobotContainer {
                                                         .MaxAngularRate))); // Drive counterclockwise with negative X (left)
 
          */
-
-        this.drivetrain.setDefaultCommand(bioDrive);
 
         // reset the field-centric heading on left bumper press
         soloStick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));

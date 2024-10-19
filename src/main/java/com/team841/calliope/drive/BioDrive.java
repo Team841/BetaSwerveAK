@@ -27,7 +27,7 @@ public class BioDrive extends Command {
 
         this.fieldCentricFacingAngle.HeadingController.setPID(Swerve.HeadingController.kp, Swerve.HeadingController.ki, Swerve.HeadingController.kd);
         this.fieldCentricFacingAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-        this.fieldCentricFacingAngle.HeadingController.setTolerance(0.1);
+        this.fieldCentricFacingAngle.HeadingController.setTolerance(0.05);
 
         this.mVelocityX = velocityXGetter;
         this.mVelocityY = velocityYGetter;
@@ -63,12 +63,12 @@ public class BioDrive extends Command {
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
 
     @Override
-    public void initialize(){
+    public void initialize() {
         return;
     }
 
     @Override
-    public void execute(){
+    public void execute() {
 
         this.faceSpeaker = mFaceSpeaker.getAsBoolean();
         this.velocity_x = mVelocityX.getAsDouble();
@@ -80,7 +80,7 @@ public class BioDrive extends Command {
         Logger.recordOutput("BioDrive/velocityY", this.velocity_y);
         Logger.recordOutput("BioDrive/velocityOmega", this.velocity_omega);
 
-        if (this.faceSpeaker){
+        if (this.faceSpeaker) {
             Rotation2d angleToSpeaker = drivetrain.getHeadingToSpeaker.get();
             Logger.recordOutput("BioDrive/headingToSpeaker", angleToSpeaker);
 
