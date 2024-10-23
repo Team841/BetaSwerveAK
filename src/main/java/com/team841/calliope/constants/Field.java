@@ -7,6 +7,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
 public class Field {
+  public static final double FIELD_WIDTH = 16.54;
+  public static final double FIELD_HEIGHT = 8.21;
   public static Pose3d kBlueSpeakerPose3d = new Pose3d(0.0, 5.549, 2.002, new Rotation3d());
   public static Pose2d kBlueSpeakerPose2d =
       new Pose2d(kBlueSpeakerPose3d.getX(), kBlueSpeakerPose3d.getY(), new Rotation2d(0.0));

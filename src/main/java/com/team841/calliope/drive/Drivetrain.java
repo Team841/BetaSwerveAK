@@ -15,6 +15,7 @@ import com.team841.calliope.constants.Field;
 import com.team841.calliope.constants.RC;
 import com.team841.calliope.constants.Swerve;
 import com.team841.calliope.vision.LimelightHelpers;
+import com.team841.lib.util.ArctanLookupTable;
 import com.team841.lib.util.FastTrig;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -225,36 +226,31 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
             };
      */
 
+    public double normalize(double value, double maxVal, double minVal){
+        return (value - minVal) / (maxVal - minVal);
+    }
+
     public Supplier<Rotation2d> getHeadingToSpeaker =
             () -> {
                 Rotation2d aimGoal;
 
+                double x, y;
+                boolean isRed = RC.isRedAlliance.get();
+
+                if (Math.abs(this.getState().Pose.getY() - Field.kRedSpeakerPose2d.getY()) < 0.15){
+                    aimGoal = isRed ? new Rotation2d(0) : new Rotation2d(Math.PI);
+                }
+
                 if (RC.isRedAlliance.get()) { // Red side
-                    if (Math.abs(this.getState().Pose.getY() - Field.kRedSpeakerPose2d.getY()) < 0.15) {
-                        // aimGoal = new Rotation2d(Math.toRadians(-1 *
-                        // this.getState().Pose.getRotation().getDegrees()));
-                        aimGoal = new Rotation2d(0);
-                    } else {
-                        aimGoal =
-                                new Rotation2d(
-                                        FastTrig.fast_atan2(
-                                                (Field.kRedSpeakerPose2d.getY() - this.getState().Pose.getY())
-                                                        , (Field.kRedSpeakerPose2d.getX() - this.getState().Pose.getX())));
-                    }
+                    x = Field.kRedSpeakerPose2d.getX() - this.getState().Pose.getX();
+                    y = Field.kRedSpeakerPose2d.getY() - this.getState().Pose.getY();
+                    //aimGoal = new Rotation2d((Field.kRedSpeakerPose2d.getX() - this.getState().Pose.getX()), (Field.kRedSpeakerPose2d.getY() - this.getState().Pose.getY()));
+                    aimGoal = new Rotation2d(FastTrig.fastAtan2((float) y, (float) x));
                 } else { // blue side
-                    if (Math.abs(this.getState().Pose.getY() - Field.kBlueSpeakerPose2d.getY()) < 0.15) {
-                        // aimGoal = new
-                        // Rotation2d(Math.toRadians(this.getState().Pose.getRotation().getDegrees() -
-                        // 180));
-                        aimGoal = new Rotation2d(Math.PI);
-                    } else {
-                        aimGoal =
-                                new Rotation2d(
-                                        FastTrig.fast_atan2(
-                                                (Field.kBlueSpeakerPose2d.getY() - this.getState().Pose.getY())
-                                                        , (Field.kBlueSpeakerPose2d.getX() - this.getState().Pose.getX()))
-                                                + 180);
-                    }
+                    x = Field.kBlueSpeakerPose2d.getX() - this.getState().Pose.getX();
+                    y = Field.kBlueSpeakerPose2d.getY() - this.getState().Pose.getY();
+                    //aimGoal = new Rotation2d((Field.kBlueSpeakerPose2d.getX() - this.getState().Pose.getX()), (Field.kBlueSpeakerPose2d.getY() - this.getState().Pose.getY()));
+                    aimGoal = new Rotation2d(FastTrig.fastAtan2((float) y, (float) x));
                 }
 
                 return aimGoal;

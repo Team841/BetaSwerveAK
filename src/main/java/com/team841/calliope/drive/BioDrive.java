@@ -3,6 +3,7 @@ package com.team841.calliope.drive;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.team841.calliope.constants.Swerve;
+import com.team841.calliope.superstructure.Shoot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -90,7 +91,7 @@ public class BioDrive extends Command {
             this.drivetrain.setControl(fieldCentricDrive.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withRotationalRate(this.velocity_omega));
         }
 
-        if (this.autoShoot && this.drivetrain.inRangeToSpeaker()){
+        if (this.autoShoot && this.drivetrain.inRangeToSpeaker() && !CommandScheduler.getInstance().isScheduled(this.shootCommand)){
             CommandScheduler.getInstance().schedule(this.shootCommand);
         }
 
