@@ -32,7 +32,7 @@ public class Shoot extends Command {
 
     @Override
     public boolean isFinished() {
-        return this.passStartTime != -1 && Logger.getRealTimestamp() - passStartTime > 0.8;
+        return this.passStartTime != -1 && Logger.getRealTimestamp() - passStartTime > 1.5;
     }
 
     @Override

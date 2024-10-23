@@ -15,7 +15,7 @@ public class RC {
 
   public static boolean rumbleNeedsPing = false;
 
-  public static final RunType robotType = RunType.COMP;
+  public static final RunType robotType = RunType.DEV;
 
   public static class Controllers {
     public static final int soloStick = 3;

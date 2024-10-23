@@ -4,6 +4,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.team841.calliope.constants.Swerve;
 import com.team841.calliope.superstructure.Shoot;
+import com.team841.lib.util.LoggedTunableNumber;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,7 +29,7 @@ public class BioDrive extends Command {
 
         this.fieldCentricFacingAngle.HeadingController.setPID(Swerve.HeadingController.kp, Swerve.HeadingController.ki, Swerve.HeadingController.kd);
         this.fieldCentricFacingAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-        this.fieldCentricFacingAngle.HeadingController.setTolerance(0.05);
+        this.fieldCentricFacingAngle.HeadingController.setTolerance(0.005);
 
         this.mVelocityX = velocityXGetter;
         this.mVelocityY = velocityYGetter;
@@ -94,7 +95,6 @@ public class BioDrive extends Command {
         if (this.autoShoot && this.drivetrain.inRangeToSpeaker() && !CommandScheduler.getInstance().isScheduled(this.shootCommand)){
             CommandScheduler.getInstance().schedule(this.shootCommand);
         }
-
     }
 
     @Override

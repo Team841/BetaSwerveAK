@@ -1,4 +1,4 @@
-package com.team841.lib.util;
+package com.team841.lib.util.atan2;
 
 
 public class FastTrig

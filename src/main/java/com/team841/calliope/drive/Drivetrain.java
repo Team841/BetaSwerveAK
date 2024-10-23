@@ -7,7 +7,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.GeometryUtil;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -15,20 +14,16 @@ import com.team841.calliope.constants.Field;
 import com.team841.calliope.constants.RC;
 import com.team841.calliope.constants.Swerve;
 import com.team841.calliope.vision.LimelightHelpers;
-import com.team841.lib.util.ArctanLookupTable;
-import com.team841.lib.util.FastTrig;
+import com.team841.lib.util.atan2.LUT.Atan2LUT;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -241,16 +236,18 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
                     aimGoal = isRed ? new Rotation2d(0) : new Rotation2d(Math.PI);
                 }
 
-                if (RC.isRedAlliance.get()) { // Red side
+                if (isRed) { // Red side
                     x = Field.kRedSpeakerPose2d.getX() - this.getState().Pose.getX();
                     y = Field.kRedSpeakerPose2d.getY() - this.getState().Pose.getY();
                     //aimGoal = new Rotation2d((Field.kRedSpeakerPose2d.getX() - this.getState().Pose.getX()), (Field.kRedSpeakerPose2d.getY() - this.getState().Pose.getY()));
-                    aimGoal = new Rotation2d(FastTrig.fastAtan2((float) y, (float) x));
+                    //aimGoal = new Rotation2d(FastTrig.fastAtan2((float) y, (float) x));
+                    aimGoal = new Rotation2d(Atan2LUT.getAtan2(x, y));
                 } else { // blue side
                     x = Field.kBlueSpeakerPose2d.getX() - this.getState().Pose.getX();
                     y = Field.kBlueSpeakerPose2d.getY() - this.getState().Pose.getY();
                     //aimGoal = new Rotation2d((Field.kBlueSpeakerPose2d.getX() - this.getState().Pose.getX()), (Field.kBlueSpeakerPose2d.getY() - this.getState().Pose.getY()));
-                    aimGoal = new Rotation2d(FastTrig.fastAtan2((float) y, (float) x));
+                    //aimGoal = new Rotation2d(FastTrig.fastAtan2((float) y, (float) x));
+                    aimGoal = new Rotation2d(Atan2LUT.getAtan2(x, y));
                 }
 
                 return aimGoal;

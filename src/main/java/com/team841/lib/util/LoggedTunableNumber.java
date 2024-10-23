@@ -17,7 +17,7 @@ public class LoggedTunableNumber {
   private boolean hasDefault = false;
   private double defaultValue;
   private LoggedDashboardNumber dashboardNumber;
-  private Map<Integer, Double> lastHasChangedValues = new HashMap<>();
+  private double LastValue = 0;
 
   /**
    * Create a new LoggedTunableNumber
@@ -48,6 +48,7 @@ public class LoggedTunableNumber {
     if (!hasDefault) {
       hasDefault = true;
       this.defaultValue = defaultValue;
+      this.LastValue = defaultValue;
       if (RC.robotType == RC.robotType.DEV) {
         dashboardNumber = new LoggedDashboardNumber(key, defaultValue);
       }
@@ -75,14 +76,12 @@ public class LoggedTunableNumber {
    * @return True if the number has changed since the last time this method was called, false
    *     otherwise.
    */
-  public boolean hasChanged(int id) {
+  public boolean hasChanged() {
     double currentValue = get();
-    Double lastValue = lastHasChangedValues.get(id);
-    if (lastValue == null || currentValue != lastValue) {
-      lastHasChangedValues.put(id, currentValue);
+    if (currentValue != this.LastValue) {
+      this.LastValue = currentValue;
       return true;
     }
-
     return false;
   }
 }
