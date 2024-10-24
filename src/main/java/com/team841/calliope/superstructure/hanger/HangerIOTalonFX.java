@@ -1,5 +1,6 @@
 package com.team841.calliope.superstructure.hanger;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -12,10 +13,18 @@ public class HangerIOTalonFX implements HangerIO{
     private boolean flipped = true;
 
     public HangerIOTalonFX() {
-        LeftHangerMotor.getConfigurator()
+
+        StatusCode leftStatus = LeftHangerMotor.getConfigurator()
                 .apply(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
-        RightHangerMotor.getConfigurator()
+                
+        StatusCode rightStatus = RightHangerMotor.getConfigurator()
                 .apply(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
+
+        if (!leftStatus.isOK() || !rightStatus.isOK())
+        {
+            RC.motorsAreWorking = false;
+       }
+
     }
 
     @Override

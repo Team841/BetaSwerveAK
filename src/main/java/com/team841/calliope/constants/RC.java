@@ -17,6 +17,8 @@ public class RC {
 
   public static final RunType robotType = RunType.COMP;
 
+  public static boolean motorsAreWorking = true;
+
   public static class Controllers {
     public static final int soloStick = 3;
     public static final int duoStickDrive = 0;

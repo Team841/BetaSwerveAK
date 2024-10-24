@@ -1,5 +1,6 @@
 package com.team841.calliope.superstructure.shooter;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.team841.calliope.constants.RC;
@@ -13,8 +14,13 @@ public class ShooterIOTalonFX implements ShooterIO{
     private final MotionMagicVelocityVoltage bottomControl = new MotionMagicVelocityVoltage(0).withFeedForward(6).withAcceleration(200).withSlot(0);
 
     public ShooterIOTalonFX() {
-        bottomShooter.getConfigurator().apply(SC.Shooter.k_BottomConfiguration);
-        topShooter.getConfigurator().apply(SC.Shooter.k_TopConfiguration);
+        StatusCode bShooterStatus = bottomShooter.getConfigurator().apply(SC.Shooter.k_BottomConfiguration);
+        StatusCode tShooterStatus = topShooter.getConfigurator().apply(SC.Shooter.k_TopConfiguration);
+
+        if (!bShooterStatus.isOK() || !tShooterStatus.isOK())
+        {
+            RC.motorsAreWorking = false;
+        }
     }
 
     @Override
