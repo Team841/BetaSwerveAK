@@ -6,6 +6,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.team841.calliope.drive.Drivetrain;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -169,9 +170,9 @@ public class Swerve {
       new ProfiledPIDController(14, 0.0, 0.0, new TrapezoidProfile.Constraints(0, 0));
 
   public static class HeadingController {
-    public static double kp = 14;
-    public static double ki = 0.0;
-    public static double kd = 0.0;
+    public static double kp = 4.8;
+    public static double ki = 0;
+    public static double kd = 0.03;
   }
 
   public static double disToRobot = 2.9;
@@ -180,4 +181,6 @@ public class Swerve {
   public static class Vision {
     public static String kLimelightFrontName = "limelight-front";
   }
+
+  public static PhoenixPIDController controller;
 }

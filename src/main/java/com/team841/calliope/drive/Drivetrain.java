@@ -14,6 +14,7 @@ import com.team841.calliope.constants.Field;
 import com.team841.calliope.constants.RC;
 import com.team841.calliope.constants.Swerve;
 import com.team841.calliope.vision.LimelightHelpers;
+import com.team841.lib.util.LoggedTunableNumber;
 import com.team841.lib.util.atan2.LUT.Atan2LUT;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -49,17 +50,19 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
      */
 
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  NetworkTable poseTest = inst.getTable("Pose Test");
+  NetworkTable networkTablePoses = inst.getTable("Drivetrain Poses");
 
-  StructTopic<Pose2d> limeT = poseTest.getStructTopic("Limelight Pose", Pose2d.struct);
+  StructTopic<Pose2d> limelightTopic = networkTablePoses.getStructTopic("Limelight Front Pose", Pose2d.struct);
+  StructTopic<Pose2d> ctreTopic = networkTablePoses.getStructTopic("CTRE Pose", Pose2d.struct);
 
-  StructTopic<Pose2d> ctreT = poseTest.getStructTopic("CTRE Pose", Pose2d.struct);
-  /*
-  StructTopic<Pose2d> shotT = poseTest.getStructTopic("SHOOOTER LIME LIGHT YEEEEEE", Pose2d.struct);
-*/
-  StructPublisher<Pose2d> limeP = limeT.publish();
-  StructPublisher<Pose2d> ctreP = ctreT.publish();
-  //StructPublisher<Pose2d> shotP = shotT.publish();
+  StructPublisher<Pose2d> limelightPublisher = limelightTopic.publish();
+  StructPublisher<Pose2d> ctrePublisher = ctreTopic.publish();
+
+    LoggedTunableNumber kp = new LoggedTunableNumber("ki");
+    LoggedTunableNumber ki = new LoggedTunableNumber("ki");
+    LoggedTunableNumber kd = new LoggedTunableNumber("kd");
+
+  Double oldKP, oldKI, oldKD;
 
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
@@ -264,19 +267,35 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     @Override
     public void periodic() {
         var PoseEstimate =
-            LimelightHelpers.getBotPoseEstimate_wpiBlue(Swerve.Vision.kLimelightFrontName);
+                LimelightHelpers.getBotPoseEstimate_wpiBlue(Swerve.Vision.kLimelightFrontName);
         if (PoseEstimate.tagCount >= 2) {
-          this.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Math.PI));
-          this.addVisionMeasurement(PoseEstimate.pose, PoseEstimate.timestampSeconds);
+            this.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Math.PI));
+            this.addVisionMeasurement(PoseEstimate.pose, PoseEstimate.timestampSeconds);
         }
 
-        ctreP.set(this.getState().Pose);
-        limeP.set(PoseEstimate.pose);
+        ctrePublisher.set(this.getState().Pose);
+        limelightPublisher.set(PoseEstimate.pose);
 
         SmartDashboard.putBoolean("2 tags", PoseEstimate.tagCount >= 2);
         SmartDashboard.putNumber("Turn angle", getHeadingToSpeaker.get().getDegrees());
         SmartDashboard.putNumber("Facing", this.getState().Pose.getRotation().getDegrees());
         SmartDashboard.putNumber("da", getHeadingToSpeaker.get().minus(this.getState().Pose.getRotation()).getDegrees());
         SmartDashboard.putBoolean("In Dinstance", inRangeToSpeaker());
+        SmartDashboard.putNumber("tune-target", 0.00);
+        SmartDashboard.putNumber("tune-angle", this.getState().Pose.getRotation().getDegrees());
+
+        if (Swerve.controller != null && oldKP == null){
+            this.oldKP = Swerve.controller.getP();
+            this.oldKI = Swerve.controller.getI();
+            this.oldKD = Swerve.controller.getD();
         }
+
+        if (kp.hasChanged() || ki.hasChanged() || kd.hasChanged()){
+            if (Swerve.controller != null){
+                Swerve.controller.setP(kp.get());
+                Swerve.controller.setI(ki.get());
+                Swerve.controller.setD(kd.get());
+            }
+        }
+    }
 }

@@ -29,7 +29,7 @@ public class BioDrive extends Command {
 
         this.fieldCentricFacingAngle.HeadingController.setPID(Swerve.HeadingController.kp, Swerve.HeadingController.ki, Swerve.HeadingController.kd);
         this.fieldCentricFacingAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-        this.fieldCentricFacingAngle.HeadingController.setTolerance(0.005);
+        this.fieldCentricFacingAngle.HeadingController.setTolerance(0.0000005);
 
         this.mVelocityX = velocityXGetter;
         this.mVelocityY = velocityYGetter;
@@ -38,6 +38,8 @@ public class BioDrive extends Command {
 
         addRequirements(drivetrain);
         setName("BioDrive");
+
+        Swerve.controller = this.fieldCentricFacingAngle.HeadingController;
     }
 
     private Command shootCommand;
@@ -84,10 +86,15 @@ public class BioDrive extends Command {
         Logger.recordOutput("BioDrive/velocityOmega", this.velocity_omega);
 
         if (this.faceSpeaker) {
+            /*
             Rotation2d angleToSpeaker = drivetrain.getHeadingToSpeaker.get();
             Logger.recordOutput("BioDrive/headingToSpeaker", angleToSpeaker);
 
             this.drivetrain.setControl(fieldCentricFacingAngle.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withTargetDirection(angleToSpeaker));
+
+             */
+            Rotation2d angle = new Rotation2d(0);
+            this.drivetrain.setControl(fieldCentricFacingAngle.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withTargetDirection(angle));
         } else {
             this.drivetrain.setControl(fieldCentricDrive.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withRotationalRate(this.velocity_omega));
         }
