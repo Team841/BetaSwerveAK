@@ -29,7 +29,7 @@ public class Hanger extends SubsystemBase {
     }
 
     public void ExtendHanger() {
-        io.setVelocity(1.00);
+        io.setVelocity(-1.00);
     }
 
     public void RetractHanger() {

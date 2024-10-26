@@ -29,6 +29,7 @@ public class ShooterIOTalonFX implements ShooterIO{
         inputs.bottomVelocity = bottomShooter.getVelocity().getValue();
         inputs.bottomMotionMagicVoltageVelocity = bottomControl.Velocity;
         inputs.topMotionMagicVoltageVelocity = topControl.Velocity;
+        inputs.dutyCycleOut = topShooter.getDutyCycle().getValue();
     }
 
     @Override
@@ -41,6 +42,12 @@ public class ShooterIOTalonFX implements ShooterIO{
     public void setMotionMagicVelocityVoltageOutput(double topVelocity, double bottomVelocity) {
         bottomShooter.setControl(bottomControl.withVelocity(topVelocity));
         topShooter.setControl(topControl.withVelocity(bottomVelocity));
+    }
+
+    @Override
+    public void setDutyCycle(double value){
+        topShooter.set(value);
+        bottomShooter.set(value);
     }
 
     @Override

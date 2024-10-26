@@ -42,12 +42,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     StructPublisher<Pose2d> limelightPublisher = limelightTopic.publish();
     StructPublisher<Pose2d> ctrePublisher = ctreTopic.publish();
 
-    LoggedTunableNumber kp = new LoggedTunableNumber("ki");
-    LoggedTunableNumber ki = new LoggedTunableNumber("ki");
-    LoggedTunableNumber kd = new LoggedTunableNumber("kd");
-
-    Double oldKP, oldKI, oldKD;
-
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -116,13 +110,17 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         }
     }
 
+    public void emtpyReturn(Pose2d input){
+        return;
+    }
+
     public void configurePathplanner() {
 
         double driveBaseRadius = 0;
 
         AutoBuilder.configureHolonomic(
                 () -> this.getState().Pose, // Supplier of current robot pose
-                this::seedFieldRelative, // Consumer for seeding pose against auto
+                this::emtpyReturn, // Consumer for seeding pose against auto
                 this::getCurrentRobotChassisSpeeds,
                 (speeds) ->
                         this.setControl(
@@ -267,19 +265,5 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         SmartDashboard.putBoolean("In Dinstance", inRangeToSpeaker());
         SmartDashboard.putNumber("tune-target", 0.00);
         SmartDashboard.putNumber("tune-angle", this.getState().Pose.getRotation().getDegrees());
-
-        if (Swerve.controller != null && oldKP == null){
-            this.oldKP = Swerve.controller.getP();
-            this.oldKI = Swerve.controller.getI();
-            this.oldKD = Swerve.controller.getD();
-        }
-
-        if (kp.hasChanged() || ki.hasChanged() || kd.hasChanged()){
-            if (Swerve.controller != null){
-                Swerve.controller.setP(kp.get());
-                Swerve.controller.setI(ki.get());
-                Swerve.controller.setD(kd.get());
-            }
-        }
     }
 }

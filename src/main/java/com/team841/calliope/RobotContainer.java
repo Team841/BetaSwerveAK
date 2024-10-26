@@ -92,8 +92,6 @@ public class RobotContainer {
     }
 
     public RobotContainer() {
-        registerNamedCommands();
-
         switch (RC.robotType) {
             default -> {
                 if (RC.robot == RC.Robot.CALLIOPE)
@@ -118,9 +116,12 @@ public class RobotContainer {
             }
         }
 
+        registerNamedCommands();
+
+
         if (RC.robot == RC.Robot.NIKE){
             this.sticksXbox = new CommandXboxController[1];
-            this.sticksPS5 = new CommandPS5Controller[1];
+            this.sticksPS5 = new CommandPS5Controller[0];
             this.sticksXbox[0] = new CommandXboxController(RC.Controllers.soloStick);
         } else {
             this.sticksPS5 = new CommandPS5Controller[1];
@@ -153,9 +154,9 @@ public class RobotContainer {
         this.drivetrain.setDefaultCommand(bioDrive);
 
         if (RC.robot == RC.Robot.NIKE){
-            configureDuoStick();
-        } else {
             configureSoloStick();
+        } else {
+            configureDuoStick();
         }
     }
 
@@ -205,8 +206,8 @@ public class RobotContainer {
                         new SequentialCommandGroup(
                                 new InstantCommand(indexer::stopIndexer),
                                 new InstantCommand(shooter::stopShooter)));
-        //sticksXbox[0].rightStick().whileTrue(new InstantCommand(hanger::ExtendHanger)).onFalse(new InstantCommand(hanger::StopHanger));
-        //sticksXbox[0].leftStick().whileTrue(new InstantCommand(hanger::RetractHanger)).onFalse(new InstantCommand(hanger::StopHanger));
+        sticksXbox[0].rightStick().whileTrue(new InstantCommand(hanger::ExtendHanger)).onFalse(new InstantCommand(hanger::StopHanger));
+        sticksXbox[0].leftStick().whileTrue(new InstantCommand(hanger::RetractHanger)).onFalse(new InstantCommand(hanger::StopHanger));
         sticksXbox[0].povCenter().whileTrue(new InstantCommand(hanger::StopHanger));
         sticksXbox[0].povLeft().whileTrue(new InstantCommand(hanger::toggleHanger));
         sticksXbox[0]

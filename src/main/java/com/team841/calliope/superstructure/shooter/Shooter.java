@@ -62,7 +62,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void stopShooter() {
-        io.setMotionMagicVelocityVoltageOutput(-0.015);
+        io.setDutyCycle(-0.05);
     }
 
     public Command runShooter(double velocity) {
