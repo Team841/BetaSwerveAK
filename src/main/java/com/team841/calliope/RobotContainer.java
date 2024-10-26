@@ -5,6 +5,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.team841.calliope.constants.RC;
 import com.team841.calliope.constants.Swerve;
+import com.team841.calliope.constants.SwerveNike;
 import com.team841.calliope.drive.BioDrive;
 import com.team841.calliope.drive.Drivetrain;
 import com.team841.calliope.superstructure.Shoot;
@@ -90,7 +91,10 @@ public class RobotContainer {
     public RobotContainer() {
         switch (RC.robotType) {
             default -> {
-                this.drivetrain = new Drivetrain(Swerve.DrivetrainConstants, Swerve.FrontLeft, Swerve.FrontRight, Swerve.BackLeft, Swerve.BackRight);
+                if (RC.robot == RC.Robot.CALLIOPE)
+                    this.drivetrain = new Drivetrain(Swerve.DrivetrainConstants, Swerve.FrontLeft, Swerve.FrontRight, Swerve.BackLeft, Swerve.BackRight);
+                else
+                    this.drivetrain = new Drivetrain(SwerveNike.DrivetrainConstants, SwerveNike.FrontLeft, SwerveNike.FrontRight, SwerveNike.BackLeft, SwerveNike.BackRight);
 
                 this.shooterIO = new ShooterIOTalonFX();
                 this.shooter = new Shooter(this.shooterIO);

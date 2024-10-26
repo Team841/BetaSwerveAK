@@ -32,37 +32,21 @@ import java.util.function.Supplier;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
 
-    /*
-     * NetworkTableInstance inst = NetworkTableInstance.getDefault();
-     * NetworkTable table = inst.getTable("LimelightTest");
-     *
-     * //final StructPublisher<Pose2d> lime = table.getStructTopic("Limelight Pose",
-     * ).publish();
-     *
-     * Topic genLime = inst.getTopic("LimelightTest");
-     * Topic poseTgen = inst.getTopic("LimelightTest");
-     *
-     * StructTopic limeT = inst.getStructTopic("LimeT", genLime.get)
-     *
-     * final StructPublisher<Pose2d> poseP;
-     * final StructPublisher<Pose2d> limeP;
-     *
-     */
 
-  NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  NetworkTable networkTablePoses = inst.getTable("Drivetrain Poses");
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable networkTablePoses = inst.getTable("Drivetrain Poses");
 
-  StructTopic<Pose2d> limelightTopic = networkTablePoses.getStructTopic("Limelight Front Pose", Pose2d.struct);
-  StructTopic<Pose2d> ctreTopic = networkTablePoses.getStructTopic("CTRE Pose", Pose2d.struct);
+    StructTopic<Pose2d> limelightTopic = networkTablePoses.getStructTopic("Limelight Front Pose", Pose2d.struct);
+    StructTopic<Pose2d> ctreTopic = networkTablePoses.getStructTopic("CTRE Pose", Pose2d.struct);
 
-  StructPublisher<Pose2d> limelightPublisher = limelightTopic.publish();
-  StructPublisher<Pose2d> ctrePublisher = ctreTopic.publish();
+    StructPublisher<Pose2d> limelightPublisher = limelightTopic.publish();
+    StructPublisher<Pose2d> ctrePublisher = ctreTopic.publish();
 
     LoggedTunableNumber kp = new LoggedTunableNumber("ki");
     LoggedTunableNumber ki = new LoggedTunableNumber("ki");
     LoggedTunableNumber kd = new LoggedTunableNumber("kd");
 
-  Double oldKP, oldKI, oldKD;
+    Double oldKP, oldKI, oldKD;
 
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;

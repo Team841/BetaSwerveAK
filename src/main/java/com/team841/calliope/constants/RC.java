@@ -17,7 +17,9 @@ public class RC {
 
   public static final RunType robotType = RunType.DEV;
 
-  public static class Controllers {
+  public static Robot robot = Robot.CALLIOPE;
+
+    public static class Controllers {
     public static final int soloStick = 3;
     public static final int duoStickDrive = 0;
     public static final int duoStickCoDrive = 1;
@@ -47,5 +49,10 @@ public class RC {
     DEV, // Developer-tuning mode
     COMP, // Comp code, real robot code
     REPLAY
+  }
+
+  public enum Robot{
+      CALLIOPE,
+        NIKE
   }
 }

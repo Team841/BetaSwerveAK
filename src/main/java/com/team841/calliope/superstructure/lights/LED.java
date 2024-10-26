@@ -16,7 +16,7 @@ public class LED extends SubsystemBase {
 
     private Intake intake;
 
-    private int count = 0;
+    private int msCount = 0;
 
     /** Creates a new LED. */
     public LED(LEDIO io, Indexer indexer, Intake intake) {
@@ -31,17 +31,17 @@ public class LED extends SubsystemBase {
         Logger.processInputs("LED", inputs);
 
         if (indexer.getRightIndexerSensor() && indexer.getLeftIndexerSensor()) {
-            io.setColor("Green");
-            if (count == 0) count += 1;
+            msCount = 0;
         }
 
-        if (count > 0) {
-            count += 1;
+        if(msCount < 3000){
+            //green
+            msCount += 20;
+            io.set(0.71);
         }
-
-        if (count > 200) {
-            io.setColor("Violet");
-            count = 0;
+        else {
+            //red
+            io.set(0.59);
         }
     }
 }
