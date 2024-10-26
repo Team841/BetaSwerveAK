@@ -17,7 +17,7 @@ public class RC {
 
   public static final RunType robotType = RunType.DEV;
 
-  public static Robot robot = Robot.CALLIOPE;
+  public static Robot robot = Robot.NIKE;
 
     public static class Controllers {
     public static final int soloStick = 3;
