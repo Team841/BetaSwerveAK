@@ -55,6 +55,8 @@ public class RobotContainer {
     public final LEDIO ledIO;
     public final LED led;
 
+    public final Feedback feedback;
+
     public final CommandXboxController sticksXbox[];
 
     public final CommandPS5Controller sticksPS5[];
@@ -129,6 +131,8 @@ public class RobotContainer {
             this.sticksPS5[0] = new CommandPS5Controller(RC.Controllers.duoStickDrive);
             this.sticksXbox[0] = new CommandXboxController(RC.Controllers.duoStickCoDrive);
         }
+
+        this.feedback = new Feedback(this.sticksXbox[0]);
 
         this.shootCommand = new Shoot(this.indexer, this.shooter);
 
