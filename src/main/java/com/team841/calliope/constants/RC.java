@@ -19,7 +19,9 @@ public class RC {
 
   public static Robot robot = Robot.NIKE;
 
-    public static class Controllers {
+  public static boolean motorsAreWorking = true;
+
+  public static class Controllers {
     public static final int soloStick = 3;
     public static final int duoStickDrive = 0;
     public static final int duoStickCoDrive = 1;

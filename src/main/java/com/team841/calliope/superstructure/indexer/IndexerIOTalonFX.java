@@ -1,5 +1,6 @@
 package com.team841.calliope.superstructure.indexer;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.team841.calliope.constants.RC;
@@ -16,9 +17,14 @@ public class IndexerIOTalonFX implements IndexerIO{
     private DutyCycleOut output = new DutyCycleOut(0);
 
     public IndexerIOTalonFX(){
-        indexerTalon.getConfigurator().apply(SC.Indexer.k_IndexerConfiguration);
+        StatusCode indexStatus = indexerTalon.getConfigurator().apply(SC.Indexer.k_IndexerConfiguration);
         this.rightSensor = new DigitalInput(SC.Indexer.k_RightSensorChannel);
         this.leftSensor = new DigitalInput(SC.Indexer.k_LeftSensorChannel);
+
+        if (!indexStatus.isOK())
+        {
+            RC.motorsAreWorking = false;
+       }
     }
 
     @Override

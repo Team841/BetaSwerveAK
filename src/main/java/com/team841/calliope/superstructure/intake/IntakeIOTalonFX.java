@@ -1,5 +1,6 @@
 package com.team841.calliope.superstructure.intake;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -12,7 +13,12 @@ public class IntakeIOTalonFX implements IntakeIO {
     private boolean brakesOn = true;
 
     public IntakeIOTalonFX(){
-       setBrakes(brakesOn);
+        StatusCode intakeStatus = intakeMotor.getConfigurator().apply(new MotorOutputConfigs());
+        if (!intakeStatus.isOK())
+        {
+            RC.motorsAreWorking = false;
+        }
+        setBrakes(brakesOn);
     }
 
     @Override
