@@ -29,6 +29,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -53,10 +54,9 @@ public class RobotContainer {
     public final LEDIO ledIO;
     public final LED led;
 
-    //public final CommandXboxController soloStick = new CommandXboxController(RC.Controllers.soloStick);
+    public final CommandXboxController sticksXbox[];
 
-    public final CommandPS5Controller duoStickDrive = new CommandPS5Controller(RC.Controllers.duoStickDrive);
-    public final CommandXboxController duoStickCoDrive = new CommandXboxController(RC.Controllers.duoStickCoDrive);
+    public final CommandPS5Controller sticksPS5[];
 
     /*private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
@@ -113,53 +113,66 @@ public class RobotContainer {
             }
         }
 
+        if (RC.robot == RC.Robot.NIKE){
+            this.sticksXbox = new CommandXboxController[1];
+            this.sticksPS5 = new CommandPS5Controller[1];
+            this.sticksXbox[0] = new CommandXboxController(RC.Controllers.soloStick);
+        } else {
+            this.sticksPS5 = new CommandPS5Controller[1];
+            this.sticksXbox = new CommandXboxController[1];
+            this.sticksPS5[0] = new CommandPS5Controller(RC.Controllers.duoStickDrive);
+            this.sticksXbox[0] = new CommandXboxController(RC.Controllers.duoStickCoDrive);
+        }
+
         this.shootCommand = new Shoot(this.indexer, this.shooter);
 
         this.bioDrive = new BioDrive(
                 this.drivetrain,
-                () -> -duoStickDrive.getLeftY() * Swerve.MaxSpeed,
-                () -> -duoStickDrive.getLeftX() * Swerve.MaxSpeed,
-                () -> -duoStickDrive.getRightX() * Swerve.MaxAngularRate,
-                () -> duoStickDrive.L2().getAsBoolean(),
-                ()->duoStickDrive.R2().getAsBoolean(),
+                () -> -sticksPS5[0].getLeftY() * Swerve.MaxSpeed,
+                () -> -sticksPS5[0].getLeftX() * Swerve.MaxSpeed,
+                () -> -sticksPS5[0].getRightX() * Swerve.MaxAngularRate,
+                () -> sticksPS5[0].L2().getAsBoolean(),
+                ()->sticksPS5[0].R2().getAsBoolean(),
                 shootCommand);
 
 
         /*this.bioDrive = new BioDrive(
                 this.drivetrain,
-                () -> -soloStick.getLeftY() * Swerve.MaxSpeed,
-                () -> -soloStick.getLeftX() * Swerve.MaxSpeed,
-                () -> -soloStick.getRightX() * Swerve.MaxAngularRate,
-                () -> soloStick.a().getAsBoolean());
+                () -> -sticksXbox[0].getLeftY() * Swerve.MaxSpeed,
+                () -> -sticksXbox[0].getLeftX() * Swerve.MaxSpeed,
+                () -> -sticksXbox[0].getRightX() * Swerve.MaxAngularRate,
+                () -> sticksXbox[0].a().getAsBoolean());
 
          */
 
         this.drivetrain.setDefaultCommand(bioDrive);
 
-        //configureSoloStick();
-        configureDuoStick();
+        if (RC.robot == RC.Robot.NIKE){
+            configureDuoStick();
+        } else {
+            configureSoloStick();
+        }
     }
 
 
-    //private void configureSoloStick() {
+    private void configureSoloStick() {
         /*this.drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(
                         () ->
                                 drive
-                                        .withVelocityX(-soloStick.getLeftY() * Swerve.MaxSpeed) // Drive forward with
+                                        .withVelocityX(-sticksXbox[0].getLeftY() * Swerve.MaxSpeed) // Drive forward with
                                         // negative Y (forward)
                                         .withVelocityY(
-                                                -soloStick.getLeftX() * Swerve.MaxSpeed) // Drive left with negative X (left)
+                                                -sticksXbox[0].getLeftX() * Swerve.MaxSpeed) // Drive left with negative X (left)
                                         .withRotationalRate(
-                                                -soloStick.getRightX()
+                                                -sticksXbox[0].getRightX()
                                                         * Swerve
                                                         .MaxAngularRate))); // Drive counterclockwise with negative X (left)
 
          */
 
-    /*
         // reset the field-centric heading on left bumper press
-        soloStick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+        sticksXbox[0].start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
         if (Utils.isSimulation()) {
             drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
@@ -168,12 +181,12 @@ public class RobotContainer {
         }
 
         Command c_command = new IntakeCommand(intake, indexer);
-        soloStick.leftBumper().whileTrue(c_command);
-        soloStick
+        sticksXbox[0].leftBumper().whileTrue(c_command);
+        sticksXbox[0]
                 .leftTrigger()
                 .onTrue(new InstantCommand(shooter::spinUp))
                 .onFalse(new InstantCommand(shooter::stopShooter));
-        soloStick
+        sticksXbox[0]
                 .rightTrigger()
                 .onTrue(
                         new ConditionalCommand(
@@ -181,21 +194,21 @@ public class RobotContainer {
                                 new InstantCommand(indexer::stopIndexer),
                                 () -> shooter.isShooting()))
                 .onFalse(new InstantCommand(indexer::stopIndexer));
-        soloStick
+        sticksXbox[0]
                 .x()
                 .onTrue(
                         new SequentialCommandGroup(
                                 new InstantCommand(indexer::stopIndexer),
                                 new InstantCommand(shooter::stopShooter)));
-        //soloStick.rightStick().whileTrue(new InstantCommand(hanger::ExtendHanger)).onFalse(new InstantCommand(hanger::StopHanger));
-        //soloStick.leftStick().whileTrue(new InstantCommand(hanger::RetractHanger)).onFalse(new InstantCommand(hanger::StopHanger));
-        soloStick.povCenter().whileTrue(new InstantCommand(hanger::StopHanger));
-        soloStick.povLeft().whileTrue(new InstantCommand(hanger::toggleHanger));
-        soloStick
+        //sticksXbox[0].rightStick().whileTrue(new InstantCommand(hanger::ExtendHanger)).onFalse(new InstantCommand(hanger::StopHanger));
+        //sticksXbox[0].leftStick().whileTrue(new InstantCommand(hanger::RetractHanger)).onFalse(new InstantCommand(hanger::StopHanger));
+        sticksXbox[0].povCenter().whileTrue(new InstantCommand(hanger::StopHanger));
+        sticksXbox[0].povLeft().whileTrue(new InstantCommand(hanger::toggleHanger));
+        sticksXbox[0]
                 .y()
                 .onTrue(new InstantCommand(shooter::ampShot))
                 .onFalse(new InstantCommand(shooter::stopShooter));
-        soloStick
+        sticksXbox[0]
                 .b()
                 .onTrue(
                         new ParallelCommandGroup(
@@ -204,47 +217,44 @@ public class RobotContainer {
                         new SequentialCommandGroup(
                                 new InstantCommand(indexer::stopIndexer), new InstantCommand(intake::stopIntake)));
 
-        soloStick
+        sticksXbox[0]
                 .rightBumper()
                 .whileTrue(new InstantCommand(shooter::flyShot))
                 .onFalse(new InstantCommand(shooter::stopShooter));
     }
-
-     */
-
 
     private void configureDuoStick() {
         /*drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(
                         () ->
                                 drive
-                                        .withVelocityX(-duoStickDrive.getLeftY() * Swerve.MaxSpeed) // Drive forward with
+                                        .withVelocityX(-sticksPS5[0].getLeftY() * Swerve.MaxSpeed) // Drive forward with
                                         // negative Y (forward)
                                         .withVelocityY(
-                                                -duoStickDrive.getLeftX() * Swerve.MaxSpeed) // Drive left with negative X (left)
+                                                -sticksPS5[0].getLeftX() * Swerve.MaxSpeed) // Drive left with negative X (left)
                                         .withRotationalRate(
-                                                -duoStickDrive.getRightX()
+                                                -sticksPS5[0].getRightX()
                                                         * Swerve
                                                         .MaxAngularRate))); // Drive counterclockwise with negative X (left)
 
         */
 
 
-        duoStickDrive.cross().whileTrue(drivetrain.applyRequest(() -> brake));
-        duoStickDrive
+        sticksPS5[0].cross().whileTrue(drivetrain.applyRequest(() -> brake));
+        sticksPS5[0]
                 .circle()
                 .whileTrue(
                         drivetrain.applyRequest(
                                 () ->
                                         point.withModuleDirection(
-                                                new Rotation2d(-duoStickDrive.getLeftY(), -duoStickDrive.getLeftX()))));
+                                                new Rotation2d(-sticksPS5[0].getLeftY(), -sticksPS5[0].getLeftX()))));
 
         // reset the field-centric heading on left bumper press
-        duoStickDrive.touchpad().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+        sticksPS5[0].touchpad().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-        //duoStickDrive.R2().whileTrue(autoAim);
+        //sticksPS5[0].R2().whileTrue(autoAim);
 
-        //duoStickDrive.triangle().whileTrue(BackOffTrap);
+        //sticksPS5[0].triangle().whileTrue(BackOffTrap);
 
         if (Utils.isSimulation()) {
             drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
@@ -253,12 +263,12 @@ public class RobotContainer {
         }
 
         Command c_command = new IntakeCommand(intake, indexer);
-        duoStickCoDrive.leftBumper().whileTrue(c_command);
-        duoStickCoDrive
+        sticksXbox[0].leftBumper().whileTrue(c_command);
+        sticksXbox[0]
                 .leftTrigger()
                 .onTrue(new InstantCommand(shooter::spinUp))
                 .onFalse(new InstantCommand(shooter::stopShooter));
-        duoStickCoDrive
+        sticksXbox[0]
                 .rightTrigger()
                 .onTrue(
                         new ConditionalCommand(
@@ -266,21 +276,21 @@ public class RobotContainer {
                                 new InstantCommand(indexer::stopIndexer),
                                 () -> shooter.isShooting()))
                 .onFalse(new InstantCommand(indexer::stopIndexer));
-        duoStickCoDrive
+        sticksXbox[0]
                 .rightBumper()
                 .onTrue(
                         new SequentialCommandGroup(
                                 new InstantCommand(indexer::stopIndexer),
                                 new InstantCommand(shooter::stopShooter)));
-        duoStickCoDrive.povUp().whileTrue(new InstantCommand(hanger::ExtendHanger)).onFalse(new InstantCommand(hanger::StopHanger));
-        duoStickCoDrive.povDown().whileTrue(new InstantCommand(hanger::RetractHanger)).onFalse(new InstantCommand(hanger::StopHanger));
-        duoStickCoDrive.povCenter().whileTrue(new InstantCommand(hanger::StopHanger));
-        duoStickCoDrive.povLeft().whileTrue(new InstantCommand(hanger::toggleHanger));
-        duoStickCoDrive
+        sticksXbox[0].povUp().whileTrue(new InstantCommand(hanger::ExtendHanger)).onFalse(new InstantCommand(hanger::StopHanger));
+        sticksXbox[0].povDown().whileTrue(new InstantCommand(hanger::RetractHanger)).onFalse(new InstantCommand(hanger::StopHanger));
+        sticksXbox[0].povCenter().whileTrue(new InstantCommand(hanger::StopHanger));
+        sticksXbox[0].povLeft().whileTrue(new InstantCommand(hanger::toggleHanger));
+        sticksXbox[0]
                 .x()
                 .onTrue(new InstantCommand(shooter::ampShot))
                 .onFalse(new InstantCommand(shooter::stopShooter));
-        duoStickCoDrive
+        sticksXbox[0]
                 .b()
                 .onTrue(
                         new ParallelCommandGroup(
@@ -289,11 +299,11 @@ public class RobotContainer {
                         new SequentialCommandGroup(
                                 new InstantCommand(indexer::stopIndexer), new InstantCommand(intake::stopIntake)));
 
-        duoStickCoDrive
+        sticksXbox[0]
                 .y()
                 .whileTrue(new InstantCommand(shooter::flyShot))
                 .onFalse(new InstantCommand(shooter::stopShooter));
-        duoStickCoDrive
+        sticksXbox[0]
                 .a()
                 .onTrue(new InstantCommand(shooter::trapShot))
                 .onFalse(new InstantCommand(shooter::stopShooter));
