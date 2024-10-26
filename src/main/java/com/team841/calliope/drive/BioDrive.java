@@ -16,11 +16,13 @@ import java.util.function.DoubleSupplier;
 
 public class BioDrive extends Command {
 
-    public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter, BooleanSupplier autoShootGetter, Command shootCommand) {
+    /*public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter, BooleanSupplier autoShootGetter, Command shootCommand) {
         this(drivetrain, velocityXGetter, velocityYGetter, velocityOmegaGetter, faceSpeakerGetter);
         this.shootCommand = shootCommand;
         this.mAutoShoot = autoShootGetter;
     }
+
+     */
 
 
     public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter) {
@@ -78,7 +80,7 @@ public class BioDrive extends Command {
         this.velocity_x = mVelocityX.getAsDouble();
         this.velocity_y = mVelocityY.getAsDouble();
         this.velocity_omega = mVelocityOmega.getAsDouble();
-        this.autoShoot = mAutoShoot.getAsBoolean();
+        //this.autoShoot = mAutoShoot.getAsBoolean();
 
         Logger.recordOutput("BioDrive/FaceSpeaker", this.faceSpeaker);
         Logger.recordOutput("BioDrive/velocityX", this.velocity_x);
@@ -86,22 +88,26 @@ public class BioDrive extends Command {
         Logger.recordOutput("BioDrive/velocityOmega", this.velocity_omega);
 
         if (this.faceSpeaker) {
-            /*
             Rotation2d angleToSpeaker = drivetrain.getHeadingToSpeaker.get();
             Logger.recordOutput("BioDrive/headingToSpeaker", angleToSpeaker);
 
             this.drivetrain.setControl(fieldCentricFacingAngle.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withTargetDirection(angleToSpeaker));
 
-             */
-            Rotation2d angle = new Rotation2d(0);
+            /*Rotation2d angle = new Rotation2d(0);
             this.drivetrain.setControl(fieldCentricFacingAngle.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withTargetDirection(angle));
+
+             */
         } else {
             this.drivetrain.setControl(fieldCentricDrive.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withRotationalRate(this.velocity_omega));
         }
 
-        if (this.autoShoot && this.drivetrain.inRangeToSpeaker() && !CommandScheduler.getInstance().isScheduled(this.shootCommand)){
-            CommandScheduler.getInstance().schedule(this.shootCommand);
+        /*if (this.mAutoShoot != null) {
+            if (this.autoShoot && this.drivetrain.inRangeToSpeaker() && !CommandScheduler.getInstance().isScheduled(this.shootCommand)) {
+                CommandScheduler.getInstance().schedule(this.shootCommand);
+            }
         }
+
+         */
     }
 
     @Override

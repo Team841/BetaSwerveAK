@@ -40,8 +40,8 @@ public class ShooterIOTalonFX implements ShooterIO{
 
     @Override
     public void setMotionMagicVelocityVoltageOutput(double topVelocity, double bottomVelocity) {
-        bottomShooter.setControl(bottomControl.withVelocity(topVelocity));
-        topShooter.setControl(topControl.withVelocity(bottomVelocity));
+        bottomShooter.setControl(bottomControl.withVelocity(bottomVelocity));
+        topShooter.setControl(topControl.withVelocity(topVelocity));
     }
 
     @Override

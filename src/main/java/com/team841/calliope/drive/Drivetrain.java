@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import org.littletonrobotics.junction.Logger;
+
 import java.util.function.Supplier;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
@@ -120,7 +122,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
 
         AutoBuilder.configureHolonomic(
                 () -> this.getState().Pose, // Supplier of current robot pose
-                this::emtpyReturn, // Consumer for seeding pose against auto
+                this::seedFieldRelative, // Consumer for seeding pose against auto
                 this::getCurrentRobotChassisSpeeds,
                 (speeds) ->
                         this.setControl(
@@ -258,6 +260,10 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         ctrePublisher.set(this.getState().Pose);
         limelightPublisher.set(PoseEstimate.pose);
 
+        Logger.recordOutput("Drivetrain/ctrePose", this.getState().Pose);
+        Logger.recordOutput("Drivetrain/limelightPose", PoseEstimate.pose);
+
+        /*
         SmartDashboard.putBoolean("2 tags", PoseEstimate.tagCount >= 2);
         SmartDashboard.putNumber("Turn angle", getHeadingToSpeaker.get().getDegrees());
         SmartDashboard.putNumber("Facing", this.getState().Pose.getRotation().getDegrees());
@@ -265,5 +271,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         SmartDashboard.putBoolean("In Dinstance", inRangeToSpeaker());
         SmartDashboard.putNumber("tune-target", 0.00);
         SmartDashboard.putNumber("tune-angle", this.getState().Pose.getRotation().getDegrees());
+         */
     }
 }

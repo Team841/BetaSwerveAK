@@ -123,27 +123,33 @@ public class RobotContainer {
 
         if (RC.robot == RC.Robot.NIKE){
             this.sticksXbox = new CommandXboxController[1];
-            this.sticksPS5 = new CommandPS5Controller[0];
+            this.sticksPS5 = new CommandPS5Controller[1];
             this.sticksXbox[0] = new CommandXboxController(RC.Controllers.soloStick);
+
+            this.bioDrive = new BioDrive(
+                    this.drivetrain,
+                    () -> -sticksXbox[0].getLeftY() * Swerve.MaxSpeed,
+                    () -> -sticksXbox[0].getLeftX() * Swerve.MaxSpeed,
+                    () -> -sticksXbox[0].getRightX() * Swerve.MaxAngularRate,
+                    () -> sticksXbox[0].a().getAsBoolean());
+
         } else {
             this.sticksPS5 = new CommandPS5Controller[1];
             this.sticksXbox = new CommandXboxController[1];
             this.sticksPS5[0] = new CommandPS5Controller(RC.Controllers.duoStickDrive);
             this.sticksXbox[0] = new CommandXboxController(RC.Controllers.duoStickCoDrive);
+
+            this.bioDrive = new BioDrive(
+                    this.drivetrain,
+                    () -> -sticksPS5[0].getLeftY() * Swerve.MaxSpeed,
+                    () -> -sticksPS5[0].getLeftX() * Swerve.MaxSpeed,
+                    () -> -sticksPS5[0].getRightX() * Swerve.MaxAngularRate,
+                    () -> sticksPS5[0].L2().getAsBoolean());
         }
 
         this.feedback = new Feedback(this.sticksXbox[0]);
 
         this.shootCommand = new Shoot(this.indexer, this.shooter);
-
-        this.bioDrive = new BioDrive(
-                this.drivetrain,
-                () -> -sticksPS5[0].getLeftY() * Swerve.MaxSpeed,
-                () -> -sticksPS5[0].getLeftX() * Swerve.MaxSpeed,
-                () -> -sticksPS5[0].getRightX() * Swerve.MaxAngularRate,
-                () -> sticksPS5[0].L2().getAsBoolean(),
-                ()->sticksPS5[0].R2().getAsBoolean(),
-                shootCommand);
 
 
         /*this.bioDrive = new BioDrive(
