@@ -3,6 +3,8 @@ package com.team841.calliope;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.team841.calliope.constants.RC;
 import com.team841.calliope.constants.Swerve;
 import com.team841.calliope.constants.SwerveNike;
@@ -28,6 +30,8 @@ import com.team841.calliope.superstructure.shooter.ShooterIOTalonFX;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
@@ -75,6 +79,8 @@ public class RobotContainer {
     private BioDrive bioDrive;
     private Shoot shootCommand;
 
+    private SendableChooser<Command> autoChooser;
+
     private static volatile RobotContainer instance;
 
     public static RobotContainer getInstance() {
@@ -89,6 +95,8 @@ public class RobotContainer {
     }
 
     public RobotContainer() {
+        registerNamedCommands();
+
         switch (RC.robotType) {
             default -> {
                 if (RC.robot == RC.Robot.CALLIOPE)
@@ -309,7 +317,55 @@ public class RobotContainer {
                 .onFalse(new InstantCommand(shooter::stopShooter));
     }
 
+    private void registerNamedCommands(){
+        // Register Named Commands
+        NamedCommands.registerCommand("IntakeOn", new IntakeAuto(intake, indexer));
+        NamedCommands.registerCommand(
+                "Shoot",
+                new ParallelCommandGroup(
+                        new InstantCommand(shooter::spinUp),
+                        new SequentialCommandGroup(new WaitCommand(1), new InstantCommand(indexer::Pass)))
+                        .withTimeout(3));
+        NamedCommands.registerCommand("SpinUp", new InstantCommand(shooter::spinUp));
+        NamedCommands.registerCommand("JustShoot", new InstantCommand(indexer::Pass).withTimeout(0.5));
+        NamedCommands.registerCommand(
+                "ALLSYSTEMSGO",
+                new ParallelCommandGroup(
+                        new InstantCommand(intake::intake),
+                        new InstantCommand(shooter::disruptshot),
+                        new InstantCommand(indexer::Pass)));
+        NamedCommands.registerCommand(
+                "FunnyInake",
+                new ParallelCommandGroup(
+                        new InstantCommand(intake::intake), new InstantCommand(indexer::Pass))
+                        .withTimeout(0.75));
+        NamedCommands.registerCommand(
+                "JustStop",
+                new ParallelCommandGroup(
+                        new InstantCommand(indexer::stopIndexer), new InstantCommand(shooter::stopShooter)));
+        NamedCommands.registerCommand(
+                "sam",
+                new ParallelCommandGroup(
+                        new InstantCommand(intake::intake),
+                        new InstantCommand(shooter::ampShot),
+                        new InstantCommand(indexer::Pass))
+                        .withTimeout(2.5));
+        NamedCommands.registerCommand("aIntake", new IntakeAuto(intake, indexer));
+        NamedCommands.registerCommand("stopIndexer", new InstantCommand(indexer::stopIndexer));
+        NamedCommands.registerCommand(
+                "CountShot",
+                new ParallelCommandGroup(
+                        new InstantCommand(shooter::spinUp),
+                        new SequentialCommandGroup(new WaitCommand(1), new InstantCommand(indexer::Pass)))
+                        .withTimeout(0.8));
+        NamedCommands.registerCommand("STOPALL", new ParallelCommandGroup(
+                new InstantCommand(indexer::stopIndexer), new InstantCommand(shooter::stopShooter), new InstantCommand(intake::stopIntake)));
+
+        autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+        SmartDashboard.putData("Auto Mode", autoChooser);
+    }
+
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return autoChooser.getSelected();
     }
 }
