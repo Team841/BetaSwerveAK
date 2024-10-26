@@ -7,22 +7,24 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.GeometryUtil;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import com.team841.calliope.constants.Field;
 import com.team841.calliope.constants.RC;
 import com.team841.calliope.constants.Swerve;
+import com.team841.calliope.vision.LimelightHelpers;
+import com.team841.lib.util.LoggedTunableNumber;
+import com.team841.lib.util.atan2.LUT.Atan2LUT;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -30,33 +32,21 @@ import java.util.function.Supplier;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
 
-    /*
-     * NetworkTableInstance inst = NetworkTableInstance.getDefault();
-     * NetworkTable table = inst.getTable("LimelightTest");
-     *
-     * //final StructPublisher<Pose2d> lime = table.getStructTopic("Limelight Pose",
-     * ).publish();
-     *
-     * Topic genLime = inst.getTopic("LimelightTest");
-     * Topic poseTgen = inst.getTopic("LimelightTest");
-     *
-     * StructTopic limeT = inst.getStructTopic("LimeT", genLime.get)
-     *
-     * final StructPublisher<Pose2d> poseP;
-     * final StructPublisher<Pose2d> limeP;
-     *
-     */
 
-  /*NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  NetworkTable poseTest = inst.getTable("Pose Test");
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable networkTablePoses = inst.getTable("Drivetrain Poses");
 
-  StructTopic<Pose2d> limeT = poseTest.getStructTopic("Limelight Pose", Pose2d.struct);
-  StructTopic<Pose2d> ctreT = poseTest.getStructTopic("CTRE Pose", Pose2d.struct);
-  StructTopic<Pose2d> shotT = poseTest.getStructTopic("SHOOOTER LIME LIGHT YEEEEEE", Pose2d.struct);
+    StructTopic<Pose2d> limelightTopic = networkTablePoses.getStructTopic("Limelight Front Pose", Pose2d.struct);
+    StructTopic<Pose2d> ctreTopic = networkTablePoses.getStructTopic("CTRE Pose", Pose2d.struct);
 
-  StructPublisher<Pose2d> limeP = limeT.publish();
-  StructPublisher<Pose2d> ctreP = ctreT.publish();
-  StructPublisher<Pose2d> shotP = shotT.publish();*/
+    StructPublisher<Pose2d> limelightPublisher = limelightTopic.publish();
+    StructPublisher<Pose2d> ctrePublisher = ctreTopic.publish();
+
+    LoggedTunableNumber kp = new LoggedTunableNumber("ki");
+    LoggedTunableNumber ki = new LoggedTunableNumber("ki");
+    LoggedTunableNumber kd = new LoggedTunableNumber("kd");
+
+    Double oldKP, oldKI, oldKD;
 
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
@@ -77,7 +67,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         }
 
         this.setOperatorPerspectiveForward(
-                RC.isRedAlliance.get() ? new Rotation2d(Math.PI) : new Rotation2d(0.0));
+                RC.isRedAlliance.get() ? new Rotation2d(Math.PI) : new Rotation2d(0));
 
     /*
     this.compute = new ComputeThread();
@@ -97,7 +87,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         }
 
         this.setOperatorPerspectiveForward(
-                RC.isRedAlliance.get() ? new Rotation2d(Math.PI) : new Rotation2d(0.0));
+                RC.isRedAlliance.get() ? new Rotation2d(Math.PI) : new Rotation2d(0));
 
     /*
     this.compute = new ComputeThread();
@@ -178,34 +168,118 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-    public void seedTemp() {
-        this.seedFieldRelative(
-                GeometryUtil.flipFieldPose(
-                        new Pose2d(1.3865381479263306, 4.631037712097168, new Rotation2d(3.14159))));
+    public Rotation2d getHeading(){
+        return this.getState().Pose.getRotation();
     }
 
-    protected Supplier<Pose2d> ComputeThreadGetPose =
+    /*public Supplier<Rotation2d> getHeadingToSpeaker =
             () -> {
-                return this.getState().Pose;
+                Rotation2d aimGoal;
+
+                if (RC.isRedAlliance.get()) { // Red side
+                    if (Math.abs(this.getState().Pose.getY() - Field.kRedSpeakerPose2d.getY()) < 0.15) {
+                        // aimGoal = new Rotation2d(Math.toRadians(-1 *
+                        // this.getState().Pose.getRotation().getDegrees()));
+                        aimGoal = new Rotation2d(0);
+                    } else {
+                        aimGoal =
+                                new Rotation2d(
+                                        Math.atan(
+                                                (Field.kRedSpeakerPose2d.getY() - this.getState().Pose.getY())
+                                                        / (Field.kRedSpeakerPose2d.getX() - this.getState().Pose.getX())));
+                    }
+                } else { // blue side
+                    if (Math.abs(this.getState().Pose.getY() - Field.kBlueSpeakerPose2d.getY()) < 0.15) {
+                        // aimGoal = new
+                        // Rotation2d(Math.toRadians(this.getState().Pose.getRotation().getDegrees() -
+                        // 180));
+                        aimGoal = new Rotation2d(Math.PI);
+                    } else {
+                        aimGoal =
+                                new Rotation2d(
+                                        Math.atan(
+                                                (Field.kBlueSpeakerPose2d.getY() - this.getState().Pose.getY())
+                                                        / (Field.kBlueSpeakerPose2d.getX() - this.getState().Pose.getX()))
+                                                + 180);
+                    }
+                }
+
+                return aimGoal;
             };
+     */
+
+    public double normalize(double value, double maxVal, double minVal){
+        return (value - minVal) / (maxVal - minVal);
+    }
+
+    public Supplier<Rotation2d> getHeadingToSpeaker =
+            () -> {
+                Rotation2d aimGoal;
+
+                double x, y;
+                boolean isRed = RC.isRedAlliance.get();
+
+                if (Math.abs(this.getState().Pose.getY() - Field.kRedSpeakerPose2d.getY()) < 0.15){
+                    aimGoal = isRed ? new Rotation2d(0) : new Rotation2d(Math.PI);
+                }
+
+                if (isRed) { // Red side
+                    x = Field.kRedSpeakerPose2d.getX() - this.getState().Pose.getX();
+                    y = Field.kRedSpeakerPose2d.getY() - this.getState().Pose.getY();
+                    //aimGoal = new Rotation2d((Field.kRedSpeakerPose2d.getX() - this.getState().Pose.getX()), (Field.kRedSpeakerPose2d.getY() - this.getState().Pose.getY()));
+                    //aimGoal = new Rotation2d(FastTrig.fastAtan2((float) y, (float) x));
+                    aimGoal = new Rotation2d(Atan2LUT.getAtan2(x, y));
+                } else { // blue side
+                    x = Field.kBlueSpeakerPose2d.getX() - this.getState().Pose.getX();
+                    y = Field.kBlueSpeakerPose2d.getY() - this.getState().Pose.getY();
+                    //aimGoal = new Rotation2d((Field.kBlueSpeakerPose2d.getX() - this.getState().Pose.getX()), (Field.kBlueSpeakerPose2d.getY() - this.getState().Pose.getY()));
+                    //aimGoal = new Rotation2d(FastTrig.fastAtan2((float) y, (float) x));
+                    aimGoal = new Rotation2d(Atan2LUT.getAtan2(x, y));
+                }
+
+                return aimGoal;
+            };
+
+    public boolean inRangeToSpeaker(){
+        Pose2d Speaker = RC.isRedAlliance.get() ? Field.kRedSpeakerPose2d : Field.kBlueSpeakerPose2d;
+        Transform2d transform = this.getState().Pose.minus(Speaker);
+        double distance = transform.getTranslation().getNorm();
+
+        return distance > Swerve.disToRobot - Swerve.disToRobotError && distance < Swerve.disToRobot + Swerve.disToRobotError;
+    }
 
     @Override
     public void periodic() {
-    /*var PoseEstimate =
-        LimelightHelpers.getBotPoseEstimate_wpiBlue(Swerve.Vision.kLimelightFrontName);
-    if (PoseEstimate.tagCount >= 2) {
-      this.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Math.PI));
-      this.addVisionMeasurement(PoseEstimate.pose, PoseEstimate.timestampSeconds);
-    }
+        var PoseEstimate =
+                LimelightHelpers.getBotPoseEstimate_wpiBlue(Swerve.Vision.kLimelightFrontName);
+        if (PoseEstimate.tagCount >= 2) {
+            this.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Math.PI));
+            this.addVisionMeasurement(PoseEstimate.pose, PoseEstimate.timestampSeconds);
+        }
 
-    ctreP.set(this.getState().Pose);
-    limeP.set(PoseEstimate.pose);*/
-/*
-    SmartDashboard.putBoolean("2 tags", PoseEstimate.tagCount >= 2);
-    Manifest.SubsystemManifest.drivetrain.compute.update(
-        this.getState().Pose, Timer.getFPGATimestamp());
-*/
-        // SmartDashboard.putNumber("Turn angle", getHeadingToSpeaker.get().getDegrees());
-        // SmartDashboard.putNumber("Facing", this.getState().Pose.getRotation().getDegrees());
+        ctrePublisher.set(this.getState().Pose);
+        limelightPublisher.set(PoseEstimate.pose);
+
+        SmartDashboard.putBoolean("2 tags", PoseEstimate.tagCount >= 2);
+        SmartDashboard.putNumber("Turn angle", getHeadingToSpeaker.get().getDegrees());
+        SmartDashboard.putNumber("Facing", this.getState().Pose.getRotation().getDegrees());
+        SmartDashboard.putNumber("da", getHeadingToSpeaker.get().minus(this.getState().Pose.getRotation()).getDegrees());
+        SmartDashboard.putBoolean("In Dinstance", inRangeToSpeaker());
+        SmartDashboard.putNumber("tune-target", 0.00);
+        SmartDashboard.putNumber("tune-angle", this.getState().Pose.getRotation().getDegrees());
+
+        if (Swerve.controller != null && oldKP == null){
+            this.oldKP = Swerve.controller.getP();
+            this.oldKI = Swerve.controller.getI();
+            this.oldKD = Swerve.controller.getD();
+        }
+
+        if (kp.hasChanged() || ki.hasChanged() || kd.hasChanged()){
+            if (Swerve.controller != null){
+                Swerve.controller.setP(kp.get());
+                Swerve.controller.setI(ki.get());
+                Swerve.controller.setD(kd.get());
+            }
+        }
     }
 }

@@ -15,7 +15,9 @@ public class RC {
 
   public static boolean rumbleNeedsPing = false;
 
-  public static final RunType robotType = RunType.COMP;
+  public static final RunType robotType = RunType.DEV;
+
+  public static Robot robot = Robot.NIKE;
 
   public static boolean motorsAreWorking = true;
 
@@ -49,5 +51,10 @@ public class RC {
     DEV, // Developer-tuning mode
     COMP, // Comp code, real robot code
     REPLAY
+  }
+
+  public enum Robot{
+      CALLIOPE,
+        NIKE
   }
 }

@@ -11,4 +11,6 @@ public interface LEDIO {
     public default void updateInputs(LedIOInputs inputs) { }
 
     public default void setColor(String color) { }
+
+    public default void set(double value) { }
 }

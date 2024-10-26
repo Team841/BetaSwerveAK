@@ -39,6 +39,8 @@ public class Indexer extends SubsystemBase {
         io.setDutyCycle(-0.6);
     }
 
+    public void FULLPASS() {io.setDutyCycle(-1.0);}
+
     public boolean getRightIndexerSensor() {
         return inputs.rightSensor;
     }

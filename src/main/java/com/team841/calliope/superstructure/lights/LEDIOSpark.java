@@ -23,4 +23,9 @@ public class LEDIOSpark implements LEDIO{
             case "Orange" -> LED.set(.65);
         }
     }
+
+    @Override
+    public void set(double value) {
+        LED.set(value);
+    }
 }
