@@ -28,7 +28,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void ampShot() {
-        io.setMotionMagicVelocityVoltageOutput(1.5, 12.5);
+        io.setMotionMagicVelocityVoltageOutput(1.5*1.75, 12.5*2.5);
     }
 
     public Command idleBack() {
