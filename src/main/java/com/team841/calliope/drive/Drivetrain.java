@@ -250,6 +250,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
 
     @Override
     public void periodic() {
+        /* 
         var PoseEstimate =
                 LimelightHelpers.getBotPoseEstimate_wpiBlue(Swerve.Vision.kLimelightFrontName);
         if (PoseEstimate.tagCount >= 2) {
