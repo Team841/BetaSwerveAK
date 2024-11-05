@@ -180,6 +180,7 @@ public class Swerve {
 
   public static class Vision {
     public static String kLimelightFrontName = "limelight-front";
+    public static String kLimelightBackName = "limelight-back";
   }
 
   public static PhoenixPIDController controller;

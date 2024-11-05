@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import org.littletonrobotics.junction.Logger;
+
 import java.util.function.Supplier;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
@@ -41,12 +43,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
 
     StructPublisher<Pose2d> limelightPublisher = limelightTopic.publish();
     StructPublisher<Pose2d> ctrePublisher = ctreTopic.publish();
-
-    LoggedTunableNumber kp = new LoggedTunableNumber("ki");
-    LoggedTunableNumber ki = new LoggedTunableNumber("ki");
-    LoggedTunableNumber kd = new LoggedTunableNumber("kd");
-
-    Double oldKP, oldKI, oldKD;
 
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
@@ -114,6 +110,10 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
                                     .withSupplyCurrentLimit(60)
                                     .withSupplyCurrentLimitEnable(true));
         }
+    }
+
+    public void emtpyReturn(Pose2d input){
+        return;
     }
 
     public void configurePathplanner() {
@@ -250,6 +250,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
 
     @Override
     public void periodic() {
+        /* 
         var PoseEstimate =
                 LimelightHelpers.getBotPoseEstimate_wpiBlue(Swerve.Vision.kLimelightFrontName);
         if (PoseEstimate.tagCount >= 2) {
@@ -260,6 +261,10 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         ctrePublisher.set(this.getState().Pose);
         limelightPublisher.set(PoseEstimate.pose);
 
+        Logger.recordOutput("Drivetrain/ctrePose", this.getState().Pose);
+        Logger.recordOutput("Drivetrain/limelightPose", PoseEstimate.pose);
+
+        /*
         SmartDashboard.putBoolean("2 tags", PoseEstimate.tagCount >= 2);
         SmartDashboard.putNumber("Turn angle", getHeadingToSpeaker.get().getDegrees());
         SmartDashboard.putNumber("Facing", this.getState().Pose.getRotation().getDegrees());
@@ -267,19 +272,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         SmartDashboard.putBoolean("In Dinstance", inRangeToSpeaker());
         SmartDashboard.putNumber("tune-target", 0.00);
         SmartDashboard.putNumber("tune-angle", this.getState().Pose.getRotation().getDegrees());
-
-        if (Swerve.controller != null && oldKP == null){
-            this.oldKP = Swerve.controller.getP();
-            this.oldKI = Swerve.controller.getI();
-            this.oldKD = Swerve.controller.getD();
-        }
-
-        if (kp.hasChanged() || ki.hasChanged() || kd.hasChanged()){
-            if (Swerve.controller != null){
-                Swerve.controller.setP(kp.get());
-                Swerve.controller.setI(ki.get());
-                Swerve.controller.setD(kd.get());
-            }
-        }
+         */
     }
 }

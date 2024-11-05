@@ -6,6 +6,7 @@ package com.team841.calliope;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.team841.calliope.constants.RC;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,6 +21,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 public class Robot extends LoggedRobot {
     private Command m_autonomousCommand;
+
+    private final DigitalInput intakeSensor = new DigitalInput(RC.robot == RC.Robot.CALLIOPE ? 0 : 2);
 
     public static RobotContainer m_robotContainer;
 
@@ -115,6 +118,9 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopPeriodic() {
+        if (!intakeSensor.get() && !(m_robotContainer.feedback.nowCounting()))
+            m_robotContainer.feedback.Intaked();
+        if (RC.rumbleNeedsPing) m_robotContainer.feedback.update();
     }
 
     @Override
