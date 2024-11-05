@@ -1,13 +1,11 @@
 package com.team841.calliope;
 
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team841.calliope.constants.RC;
 import com.team841.calliope.constants.Swerve;
-import com.team841.calliope.constants.SwerveNike;
 import com.team841.calliope.drive.BioDrive;
 import com.team841.calliope.drive.Drivetrain;
 import com.team841.calliope.superstructure.Shoot;
@@ -30,11 +28,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
-import static com.team841.calliope.constants.Swerve.DrivetrainConstants;
 
 public class RobotContainer {
 
@@ -96,10 +91,7 @@ public class RobotContainer {
     public RobotContainer() {
         switch (RC.robotType) {
             default -> {
-                if (RC.robot == RC.Robot.CALLIOPE)
-                    this.drivetrain = new Drivetrain(Swerve.DrivetrainConstants, Swerve.FrontLeft, Swerve.FrontRight, Swerve.BackLeft, Swerve.BackRight);
-                else
-                    this.drivetrain = new Drivetrain(SwerveNike.DrivetrainConstants, SwerveNike.FrontLeft, SwerveNike.FrontRight, SwerveNike.BackLeft, SwerveNike.BackRight);
+                this.drivetrain = new Drivetrain(Swerve.DrivetrainConstants, Swerve.FrontLeft, Swerve.FrontRight, Swerve.BackLeft, Swerve.BackRight);
 
                 this.shooterIO = new ShooterIOTalonFX();
                 this.shooter = new Shooter(this.shooterIO);
@@ -120,32 +112,17 @@ public class RobotContainer {
 
         registerNamedCommands();
 
+        this.sticksPS5 = new CommandPS5Controller[1];
+        this.sticksXbox = new CommandXboxController[1];
+        this.sticksPS5[0] = new CommandPS5Controller(RC.Controllers.duoStickDrive);
+        this.sticksXbox[0] = new CommandXboxController(RC.Controllers.duoStickCoDrive);
 
-        if (RC.robot == RC.Robot.NIKE){
-            this.sticksXbox = new CommandXboxController[1];
-            this.sticksPS5 = new CommandPS5Controller[1];
-            this.sticksXbox[0] = new CommandXboxController(RC.Controllers.soloStick);
-
-            this.bioDrive = new BioDrive(
-                    this.drivetrain,
-                    () -> -sticksXbox[0].getLeftY() * Swerve.MaxSpeed,
-                    () -> -sticksXbox[0].getLeftX() * Swerve.MaxSpeed,
-                    () -> -sticksXbox[0].getRightX() * Swerve.MaxAngularRate,
-                    () -> sticksXbox[0].a().getAsBoolean());
-
-        } else {
-            this.sticksPS5 = new CommandPS5Controller[1];
-            this.sticksXbox = new CommandXboxController[1];
-            this.sticksPS5[0] = new CommandPS5Controller(RC.Controllers.duoStickDrive);
-            this.sticksXbox[0] = new CommandXboxController(RC.Controllers.duoStickCoDrive);
-
-            this.bioDrive = new BioDrive(
-                    this.drivetrain,
-                    () -> -sticksPS5[0].getLeftY() * Swerve.MaxSpeed,
-                    () -> -sticksPS5[0].getLeftX() * Swerve.MaxSpeed,
-                    () -> -sticksPS5[0].getRightX() * Swerve.MaxAngularRate,
-                    () -> sticksPS5[0].L2().getAsBoolean());
-        }
+        this.bioDrive = new BioDrive(
+                this.drivetrain,
+                () -> -sticksPS5[0].getLeftY() * Swerve.MaxSpeed,
+                () -> -sticksPS5[0].getLeftX() * Swerve.MaxSpeed,
+                () -> -sticksPS5[0].getRightX() * Swerve.MaxAngularRate,
+                () -> sticksPS5[0].L2().getAsBoolean());
 
         this.feedback = new Feedback(this.sticksXbox[0]);
 
@@ -163,11 +140,7 @@ public class RobotContainer {
 
         this.drivetrain.setDefaultCommand(bioDrive);
 
-        if (RC.robot == RC.Robot.NIKE){
-            configureSoloStick();
-        } else {
-            configureDuoStick();
-        }
+        configureDuoStick();
     }
 
 
