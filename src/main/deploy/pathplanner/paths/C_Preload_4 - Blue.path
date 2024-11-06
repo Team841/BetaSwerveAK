@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.167438767095844,
-        "y": 3.7804537889005365
+        "x": 2.8012958736331153,
+        "y": 2.869154953716469
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.9504189253084125,
-        "y": 2.1267355189414747
+        "x": 4.5842760318456826,
+        "y": 1.215436683757407
       },
       "isLocked": false,
-      "linkedName": "C-Preload - Blue"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -54,7 +54,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Middle Out - Blue",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

@@ -3,47 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.38,
-        "y": 1.59
+        "x": 2.49,
+        "y": 6.46
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.420150086637606,
-        "y": 1.6760986094138155
+        "x": 4.5481609452008165,
+        "y": 6.735622341110154
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.4851032868970147,
-        "y": 3.2439017231814775
+        "x": 8.012565621543798,
+        "y": 7.38
       },
       "prevControl": {
-        "x": 2.488172913283504,
-        "y": 3.1939960381962242
+        "x": 8.041668844268257,
+        "y": 7.38
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "C-Preload - Blue"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 6.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 140.0,
-    "rotateFast": true
+    "rotation": -171.41637851988602,
+    "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
-  "previewStartingState": null,
-  "useDefaultConstraints": false
+  "folder": "Geo Autos ",
+  "previewStartingState": {
+    "rotation": -156.77014046793445,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
 }

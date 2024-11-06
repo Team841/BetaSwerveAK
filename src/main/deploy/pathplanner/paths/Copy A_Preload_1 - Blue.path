@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.8772918365965836,
-        "y": 7.024786793851757
+        "x": 2.8035277595218875,
+        "y": 6.742298829889139
       },
       "prevControl": {
-        "x": 2.8385597359624657,
-        "y": 6.9931667941606035
+        "x": 2.7647956588877696,
+        "y": 6.710678830197985
       },
       "nextControl": {
-        "x": 2.9160239372307015,
-        "y": 7.056406793542911
+        "x": 2.8422598601560054,
+        "y": 6.773918829580293
       },
       "isLocked": false,
       "linkedName": null
@@ -36,12 +36,12 @@
         "y": 6.464381773271393
       },
       "prevControl": {
-        "x": 2.411109587264863,
-        "y": 6.418423248086454
+        "x": 2.440656982181373,
+        "y": 6.473064182154739
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "the shot 1"
     }
   ],
   "rotationTargets": [
@@ -61,13 +61,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -153.0,
+    "rotation": -152.92791976200726,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "A - BLUE - 123",
+  "folder": "Geo Autos ",
   "previewStartingState": {
-    "rotation": -135.0,
+    "rotation": -144.25459225364824,
     "velocity": 0
   },
   "useDefaultConstraints": false

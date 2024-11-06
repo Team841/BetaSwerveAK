@@ -12,16 +12,16 @@
         "y": 0.8776055734329787
       },
       "isLocked": false,
-      "linkedName": "C-Preload_4 - Blue"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.167438767095844,
-        "y": 3.7804537889005365
+        "x": 2.4851032868970147,
+        "y": 3.2439017231814775
       },
       "prevControl": {
-        "x": 3.6453437205634085,
-        "y": 1.9880649713301088
+        "x": 3.9630082403645748,
+        "y": 1.4515129056110494
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Middle In - Blue",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": true
 }
