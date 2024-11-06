@@ -34,7 +34,7 @@ public class LED extends SubsystemBase {
             msCount = 0;
         }
 
-        if(msCount < 3000){
+        if(msCount < 1000){
             //green
             msCount += 20;
             io.setColor("green");
