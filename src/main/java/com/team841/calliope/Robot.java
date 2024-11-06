@@ -22,7 +22,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
     private Command m_autonomousCommand;
 
-    private final DigitalInput intakeSensor = new DigitalInput(RC.robot == RC.Robot.CALLIOPE ? 0 : 2);
+    private final DigitalInput intakeSensor = new DigitalInput(2);
 
     public static RobotContainer m_robotContainer;
 
