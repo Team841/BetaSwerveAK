@@ -41,7 +41,7 @@ deploy {
                     jvmArgs.add("-XX:+UseSerialGC")
                     jvmArgs.add("-XX:MaxGCPauseMillis=50")
                     jvmArgs.add("-XX:+AlwaysPreTouch")// Pre-touch memory pages used by the JVM during initialization
-                }d
+                }
 
                 // Static files artifact
                 frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
