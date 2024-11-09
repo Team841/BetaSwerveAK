@@ -248,21 +248,28 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         return distance > Swerve.disToRobot - Swerve.disToRobotError && distance < Swerve.disToRobot + Swerve.disToRobotError;
     }
 
+    void configureVision(LimelightHelpers.PoseEstimate PoseEstimate, String name){
+        if (PoseEstimate == null)
+                return;
+        else if (PoseEstimate.tagCount >= 2) {
+            this.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Math.PI*2));
+            this.addVisionMeasurement(PoseEstimate.pose, PoseEstimate.timestampSeconds);
+            Logger.recordOutput("Drivetrain/" + name, PoseEstimate.pose);
+        }
+    }
+
     @Override
     public void periodic() {
-        /* 
+
         var PoseEstimate =
                 LimelightHelpers.getBotPoseEstimate_wpiBlue(Swerve.Vision.kLimelightFrontName);
-        if (PoseEstimate.tagCount >= 2) {
-            this.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Math.PI));
-            this.addVisionMeasurement(PoseEstimate.pose, PoseEstimate.timestampSeconds);
-        }
+        configureVision(PoseEstimate, Swerve.Vision.kLimelightFrontName);
+        PoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
+        configureVision(PoseEstimate, "limelight-left");
+        PoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+        configureVision(PoseEstimate, "limelight-right");
 
-        ctrePublisher.set(this.getState().Pose);
-        limelightPublisher.set(PoseEstimate.pose);
 
-        Logger.recordOutput("Drivetrain/ctrePose", this.getState().Pose);
-        Logger.recordOutput("Drivetrain/limelightPose", PoseEstimate.pose);
 
         /*
         SmartDashboard.putBoolean("2 tags", PoseEstimate.tagCount >= 2);
