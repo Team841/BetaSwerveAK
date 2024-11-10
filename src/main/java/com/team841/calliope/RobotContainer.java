@@ -112,6 +112,7 @@ public class RobotContainer {
 
         registerNamedCommands();
 
+        /*
         this.sticksXbox = new CommandXboxController[1];
         this.sticksPS5 = new CommandPS5Controller[1];
         this.sticksXbox[0] = new CommandXboxController(RC.Controllers.soloStick);
@@ -122,6 +123,24 @@ public class RobotContainer {
                 () -> -sticksXbox[0].getLeftX() * Swerve.MaxSpeed,
                 () -> -sticksXbox[0].getRightX() * Swerve.MaxAngularRate,
                 () -> sticksXbox[0].a().getAsBoolean());
+
+         */
+                
+
+
+        this.sticksPS5 = new CommandPS5Controller[1];
+        this.sticksXbox = new CommandXboxController[1];
+        this.sticksPS5[0] = new CommandPS5Controller(RC.Controllers.duoStickDrive);
+        this.sticksXbox[0] = new CommandXboxController(RC.Controllers.duoStickCoDrive);
+
+        this.bioDrive = new BioDrive(
+                this.drivetrain,
+                () -> -sticksPS5[0].getLeftY() * Swerve.MaxSpeed,
+                () -> -sticksPS5[0].getLeftX() * Swerve.MaxSpeed,
+                () -> -sticksPS5[0].getRightX() * Swerve.MaxAngularRate,
+                () -> sticksPS5[0].L2().getAsBoolean());
+
+
 
         this.feedback = new Feedback(this.sticksXbox[0]);
 
@@ -139,7 +158,8 @@ public class RobotContainer {
 
         this.drivetrain.setDefaultCommand(bioDrive);
 
-        configureSoloStick();
+        configureDuoStick();
+        //configureSoloStick();
 
     }
 
@@ -211,7 +231,6 @@ public class RobotContainer {
                 .whileTrue(new InstantCommand(shooter::flyShot))
                 .onFalse(new InstantCommand(shooter::stopShooter));
     }
-
     private void configureDuoStick() {
         /*drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(

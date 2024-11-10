@@ -1,5 +1,6 @@
 package com.team841.calliope.drive;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
@@ -18,6 +19,7 @@ import com.team841.lib.util.LoggedTunableNumber;
 import com.team841.lib.util.atan2.LUT.Atan2LUT;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -38,11 +40,18 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     NetworkTable networkTablePoses = inst.getTable("Drivetrain Poses");
 
+    /*
     StructTopic<Pose2d> limelightTopic = networkTablePoses.getStructTopic("Limelight Front Pose", Pose2d.struct);
     StructTopic<Pose2d> ctreTopic = networkTablePoses.getStructTopic("CTRE Pose", Pose2d.struct);
 
     StructPublisher<Pose2d> limelightPublisher = limelightTopic.publish();
     StructPublisher<Pose2d> ctrePublisher = ctreTopic.publish();
+
+     */
+    StructPublisher<Pose2d> ctre = networkTablePoses.getStructTopic("CTRE Pose", Pose2d.struct).publish();
+    StructPublisher<Pose2d> limelight_front = networkTablePoses.getStructTopic("Limelight Front Pose", Pose2d.struct).publish();
+    StructPublisher<Pose2d> limelight_left = networkTablePoses.getStructTopic("Limelight Left Pose", Pose2d.struct).publish();
+    StructPublisher<Pose2d> limelight_right = networkTablePoses.getStructTopic("Limelight Right Pose", Pose2d.struct).publish();
 
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
@@ -261,14 +270,16 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     @Override
     public void periodic() {
 
+        ctre.set((this.getState().Pose));
+
         var PoseEstimate =
                 LimelightHelpers.getBotPoseEstimate_wpiBlue(Swerve.Vision.kLimelightFrontName);
         configureVision(PoseEstimate, Swerve.Vision.kLimelightFrontName);
+        if (PoseEstimate != null) ctre.set(PoseEstimate.pose);
         PoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
-        configureVision(PoseEstimate, "limelight-left");
+        if (PoseEstimate != null) limelight_left.set(PoseEstimate.pose);
         PoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
-        configureVision(PoseEstimate, "limelight-right");
-
+        if (PoseEstimate != null) limelight_right.set(PoseEstimate.pose);
 
 
         /*
