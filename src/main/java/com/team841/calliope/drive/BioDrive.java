@@ -24,6 +24,15 @@ public class BioDrive extends Command {
 
      */
 
+    public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter, BooleanSupplier overRideTurn, DoubleSupplier overrideVelocity) {
+
+        this(drivetrain, velocityXGetter, velocityYGetter, velocityOmegaGetter, faceSpeakerGetter);
+
+        this.Override = overRideTurn;
+        this.vOverride = overrideVelocity;
+
+    }
+
 
     public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter) {
 
@@ -46,14 +55,16 @@ public class BioDrive extends Command {
 
     private Command shootCommand;
 
-    private DoubleSupplier mVelocityX, mVelocityY, mVelocityOmega;
-    private BooleanSupplier mFaceSpeaker, mAutoShoot;
+    private DoubleSupplier mVelocityX, mVelocityY, mVelocityOmega, vOverride;
+    private BooleanSupplier mFaceSpeaker, mAutoShoot, Override;
 
     private boolean faceSpeaker = false;
     private double velocity_y = 0.0;
     private double velocity_x = 0.0;
     private double velocity_omega = 0.0;
     private boolean autoShoot = false;
+    private boolean overRide = false;
+    private double overrideVelocity = 0.0;
 
     private Drivetrain drivetrain;
 
@@ -81,6 +92,8 @@ public class BioDrive extends Command {
         this.velocity_y = mVelocityY.getAsDouble();
         this.velocity_omega = mVelocityOmega.getAsDouble();
         //this.autoShoot = mAutoShoot.getAsBoolean();
+        this.overRide = Override.getAsBoolean();
+        this.overrideVelocity = vOverride.getAsDouble();
 
         Logger.recordOutput("BioDrive/FaceSpeaker", this.faceSpeaker);
         Logger.recordOutput("BioDrive/velocityX", this.velocity_x);
@@ -97,6 +110,8 @@ public class BioDrive extends Command {
             this.drivetrain.setControl(fieldCentricFacingAngle.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withTargetDirection(angle));
 
              */
+        } else if (overRide) {
+            this.drivetrain.setControl(fieldCentricDrive.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withRotationalRate(this.overrideVelocity));
         } else {
             this.drivetrain.setControl(fieldCentricDrive.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withRotationalRate(this.velocity_omega));
         }

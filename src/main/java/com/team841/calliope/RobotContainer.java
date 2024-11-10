@@ -138,7 +138,9 @@ public class RobotContainer {
                 () -> -sticksPS5[0].getLeftY() * Swerve.MaxSpeed,
                 () -> -sticksPS5[0].getLeftX() * Swerve.MaxSpeed,
                 () -> -sticksPS5[0].getRightX() * Swerve.MaxAngularRate,
-                () -> sticksPS5[0].L2().getAsBoolean());
+                () -> sticksPS5[0].L2().getAsBoolean(),
+                () -> sticksXbox[0].rightBumper().getAsBoolean(),
+                () -> -sticksXbox[0].getRightX() * 2 * Math.PI);
 
 
 
@@ -285,7 +287,7 @@ public class RobotContainer {
                                 () -> shooter.isShooting()))
                 .onFalse(new InstantCommand(indexer::stopIndexer));
         sticksXbox[0]
-                .rightBumper()
+                .start()
                 .onTrue(
                         new SequentialCommandGroup(
                                 new InstantCommand(indexer::stopIndexer),
