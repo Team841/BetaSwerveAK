@@ -49,6 +49,8 @@ public class Shooter extends SubsystemBase {
         io.setMotionMagicVelocityVoltageOutput(70);
     }
 
+    public void flyShot2() {io.setMotionMagicVelocityVoltageOutput(50);}
+
     public void disruptshot() {
         io.setMotionMagicVelocityVoltageOutput(12.5);
     }

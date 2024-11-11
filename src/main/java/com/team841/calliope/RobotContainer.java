@@ -139,8 +139,7 @@ public class RobotContainer {
                 () -> -sticksPS5[0].getLeftX() * Swerve.MaxSpeed,
                 () -> -sticksPS5[0].getRightX() * Swerve.MaxAngularRate,
                 () -> sticksPS5[0].L2().getAsBoolean(),
-                () -> sticksXbox[0].rightBumper().getAsBoolean(),
-                () -> -sticksXbox[0].getRightX() * 2 * Math.PI);
+                () -> -sticksXbox[0].getLeftX());
 
 
 
@@ -316,6 +315,10 @@ public class RobotContainer {
         sticksXbox[0]
                 .a()
                 .onTrue(new InstantCommand(shooter::trapShot))
+                .onFalse(new InstantCommand(shooter::stopShooter));
+
+        sticksXbox[0].rightBumper()
+                .whileTrue(new InstantCommand(shooter::flyShot2))
                 .onFalse(new InstantCommand(shooter::stopShooter));
     }
 
