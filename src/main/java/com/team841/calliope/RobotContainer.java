@@ -117,12 +117,21 @@ public class RobotContainer {
         this.sticksPS5[0] = new CommandPS5Controller(RC.Controllers.duoStickDrive);
         this.sticksXbox[0] = new CommandXboxController(RC.Controllers.duoStickCoDrive);
 
-        this.bioDrive = new BioDrive(
+        /*this.bioDrive = new BioDrive(
                 this.drivetrain,
                 () -> -sticksPS5[0].getLeftY() * Swerve.MaxSpeed,
                 () -> -sticksPS5[0].getLeftX() * Swerve.MaxSpeed,
                 () -> -sticksPS5[0].getRightX() * Swerve.MaxAngularRate,
                 () -> sticksPS5[0].L2().getAsBoolean());
+
+         */
+
+        this.bioDrive = new BioDrive(
+                this.drivetrain,
+                () -> -sticksXbox[0].getLeftY() * Swerve.MaxSpeed,
+                () -> -sticksXbox[0].getLeftX() * Swerve.MaxSpeed,
+                () -> -sticksXbox[0].getRightX() * Swerve.MaxAngularRate,
+                () -> sticksXbox[0].a().getAsBoolean());
 
         this.feedback = new Feedback(this.sticksXbox[0]);
 
@@ -140,7 +149,7 @@ public class RobotContainer {
 
         this.drivetrain.setDefaultCommand(bioDrive);
 
-        configureDuoStick();
+        configureSoloStick();
     }
 
 
