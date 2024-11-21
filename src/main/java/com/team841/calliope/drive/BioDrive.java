@@ -23,16 +23,6 @@ public class BioDrive extends Command {
     }
 
      */
-
-    public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter, DoubleSupplier overrideVelocity) {
-
-        this(drivetrain, velocityXGetter, velocityYGetter, velocityOmegaGetter, faceSpeakerGetter);
-
-        this.vOverride = overrideVelocity;
-
-    }
-
-
     public BioDrive(Drivetrain drivetrain, DoubleSupplier velocityXGetter, DoubleSupplier velocityYGetter, DoubleSupplier velocityOmegaGetter, BooleanSupplier faceSpeakerGetter) {
 
         this.drivetrain = drivetrain;
@@ -54,7 +44,7 @@ public class BioDrive extends Command {
 
     private Command shootCommand;
 
-    private DoubleSupplier mVelocityX, mVelocityY, mVelocityOmega, vOverride;
+    private DoubleSupplier mVelocityX, mVelocityY, mVelocityOmega;
     private BooleanSupplier mFaceSpeaker, mAutoShoot;
 
     private boolean faceSpeaker = false;
@@ -62,8 +52,6 @@ public class BioDrive extends Command {
     private double velocity_x = 0.0;
     private double velocity_omega = 0.0;
     private boolean autoShoot = false;
-    private double overrideVelocity = 0.0;
-
     private Drivetrain drivetrain;
 
     private final SwerveRequest.FieldCentric fieldCentricDrive =
@@ -90,7 +78,6 @@ public class BioDrive extends Command {
         this.velocity_y = mVelocityY.getAsDouble();
         this.velocity_omega = mVelocityOmega.getAsDouble();
         //this.autoShoot = mAutoShoot.getAsBoolean();
-        this.overrideVelocity = vOverride.getAsDouble();
 
         Logger.recordOutput("BioDrive/FaceSpeaker", this.faceSpeaker);
         Logger.recordOutput("BioDrive/velocityX", this.velocity_x);
@@ -107,8 +94,6 @@ public class BioDrive extends Command {
             this.drivetrain.setControl(fieldCentricFacingAngle.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withTargetDirection(angle));
 
              */
-        } else if (Math.abs(overrideVelocity) > 0.15) {
-            this.drivetrain.setControl(fieldCentricDrive.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withRotationalRate(-this.overrideVelocity * 2 * Math.PI));
         } else {
             this.drivetrain.setControl(fieldCentricDrive.withVelocityX(-this.velocity_x).withVelocityY(-this.velocity_y).withRotationalRate(this.velocity_omega));
         }
